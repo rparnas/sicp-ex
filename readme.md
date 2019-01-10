@@ -20,11 +20,41 @@ The exercise prompt in each file was parsed from a fork of [sarabander/sicp-pdf]
 
 ## Utilities
 
-| Function | Usage and Description |
-| - | - |
-| load-ex | `(load-ex "2.53")` <br> `(load-ex "2.53" #t)` <br> Loads the answer file associated with the given exercise. If the optional #t argument is provided, resets the interpreter before doing so. |
-| square ||
-| tracize ||
+### dec
+`(dec n)`
+Decrements the given number `n` by 1.
+
+### inc
+`(inc n)`
+Increments the given number `n` by 1.
+
+### load-ex
+`(load-ex "2.53")`
+`(load-ex "2.53" #t)`
+Loads the answer file associated with the given exercise. If the optional #t argument is provided, resets the interpreter before doing so.
+
+### square
+`(square n)`
+Squares the given number `n`.
+
+### tracize
+`(traceize func)`
+Allows the given function to be traced by returning a version of it which will display the arguments with which that function was invoked. For example:
+````
+> (define (f n) (if (< n 1) n (f (- n 1))))
+> (define f-original f)
+> (set! f (tracize f))
+> (f 4)
+(#<procedure f> 4)
+(#<procedure f> 3)
+(#<procedure f> 2)
+(#<procedure f> 1)
+(#<procedure f> 0)
+0
+> (set! f f-original)
+> (f 4)
+0
+````
 
 # Resources 
 ## Lectures
