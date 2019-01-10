@@ -8,18 +8,23 @@ This project intends to reduce the pain points of completing the exercises from 
 
 # Instructions
 
-Checkout this repository, `sicp-ex`. Write the answers to each exercise in its respective file under the `\exercises\` directory. Start your interpreter using the provided batch script `ex` in the repository root (i.e. execute `.\ex`). This starts your interpreter and gives you full access to the utilities provided in `ex.ss`. These utilities are functions meant to be available to every exercise. Feel free to add your own.
+Checkout this repository, `sicp-ex`. Write the answers to each exercise in its respective file under the `\exercises\` directory. Start your interpreter using the provided bash script `ex` in the repository root, passing the name of your interpreter like `.\ex scheme` or `.\ex racket`. This starts your interpreter and gives you full access to the utilities provided in `ex.ss`. These utilities are functions meant to be available to every exercise. Feel free to add your own.
 
 At the top of your exercise file you may load the contents of previous exercises using `load-ex` like `(load-ex "2.83")`. This displays the list of files loaded to help you keep track of the relationship between your exercise answers. It also avoids polluting the global environment with unecessary content.
 
-To load a file and reset the global enviornment completely, run `load-ex` with an addition #t parameter like `(load-ex "2.83" #t)`. This allows you to effectively roll back to any exercise, even if its content is loaded and built on in subsequent exercises.
+To load an exercise and reset the global enviornment completely, run `load-ex` with the additional #t parameter like `(load-ex "2.83" #t)`. This allows you to effectively roll back to any exercise, even if its content is loaded and built on in subsequent exercises.
 
 # Details
 ## Exercise Files
 The exercise prompt in each file was parsed from a fork of [sarabander/sicp-pdf](https://github.com/sarabander/sicp-pdf) at [this commit](https://github.com/rparnas/sicp-pdf/commit/62d2b424470f37587f056ab73addc850a7d6da8e).
 
 ## Utilities
-TBD
+
+| Function | Usage and Description |
+| - | - |
+| load-ex | `(load-ex "2.53")` <br> `(load-ex "2.53" #t)` <br> Loads the answer file associated with the given exercise. If the optional #t argument is provided, resets the interpreter before doing so. |
+| square ||
+| tracize ||
 
 # Resources 
 ## Lectures
@@ -55,7 +60,7 @@ TBD
 * Improvement: Reference physical page numbers
 * Improvement: Include more utilit code.
 * Improvement: Better document the expected dependencies between exercises
-* Improvement: Make interpreter reload script work without having to use a batch script.
+* Improvement: Make interpreter reload script work without having to use a bash script.
 * Improvement: Uncomment parts of prompt with code needed for the answer.
 * Improvement: Included "copied from book code" required for answers and which is not part of the exercise prompt.
 
