@@ -1,30 +1,52 @@
-; Given an exercise number returns where that exercise is stored.
-(define (ex-n-to-path n)
-  (define exercise-dir ".\\exercises\\")
-  (define exercise-ext ".ss")
-  (string-append exercise-dir n exercise-ext))
 
-; Restarts scheme entirely and loads the given exercise file.
-(define (ex n)
+#| Utilities |#
+
+; Loads an exercise given as a string in a format like
+; "2.56". If the optional second argument is provided as #t,
+; the interpreter is reset beforehand.
+(define (load-ex n . args)
+  (define (ex-n-to-path n)
+    (define exercise-dir ".\\exercises\\")
+    (define exercise-ext ".ss")
+    (string-append exercise-dir n exercise-ext))
   (define (write-n n)
-    (with-output-to-file "n" (lambda () (write n)) 'replace))
-  (cond [(not (string? n)) 
-          (error "ex" "n must be a string" n)]
-        [(not (file-exists? (ex-n-to-path n)))
-          (error "ex" "n must be a valid exercise" n)]
+    (with-output-to-file "n" (lambda () (write n))))
+  (cond [(= (length args) 0)
+         ; load an exercise file
+         (let ([path (ex-n-to-path n)])
+           (load path)
+           (display (string-append "Loaded " path "\n")))]
+        [(= (length args) 1)
+         ; reset the interpreter and load an exercise file.
+         (cond [(not (string? n)) 
+                (error "load-ex" "n must be a string" n)]
+               [(not (file-exists? (ex-n-to-path n)))
+                (error "load-ex" "invalid exercise" n)]
+               [else 
+                (write-n n)
+                (exit)])]
         [else 
-          (begin 
-            (write-n n)
-            (exit))]))
+         (error "load-ex" "too many arguments" (cons n args))]))
 
-; Loads an exercise file and displays it so the user can keep track of what was loaded.
-(define (load-ex n)
-  (let ([path (ex-n-to-path n)])
-    (begin
-      (load path)
-      (display (string-append "Loaded " path "\n")))))
+; increments the given number.
+(define (inc x) 
+  (+ x 1))
 
-; Startup script
+; decrements the given number.
+(define (dec x) 
+  (- x 1))
+
+; squares the given number
+(define (square x)
+  (* x x))
+
+; displays a functions arguments when it is invoked
+(define (tracize f)
+  (lambda args
+    (display (format "~a\r\n" (cons f args)))
+    (apply f args)))
+
+#| Startup |#
 ((lambda ()
   (define (read-n)
     (if (not (file-exists? "n"))
@@ -34,4 +56,5 @@
               path)))
   (let ([n (read-n)])
     (if (not (null? n))
-        (load-ex n)))))
+        (load-ex n)
+        (void)))))
