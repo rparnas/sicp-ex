@@ -1,21 +1,23 @@
 
 #| Utilities |#
 
-; Loads an exercise given as a string in a format like
+; Loads an exercise given its string name in a format like
 ; "2.56". If the optional second argument is provided as #t,
-; the interpreter is reset beforehand.
+; the name of the exercise to be loaded is written to the
+; file "n", the interpreter exits, the interpreter is run
+; fresh, and the startup script below is responsible for
+; loading the exercise.
 (define (load-ex n . args)
   (define (ex-n-to-path n)
-    (define exercise-dir ".\\exercises\\")
-    (define exercise-ext ".ss")
-    (string-append exercise-dir n exercise-ext))
+    (format ".\\exercises\\~a.ss" n))
   (define (write-n n)
     (with-output-to-file "n" (lambda () (write n))))
   (cond [(= (length args) 0)
          ; load an exercise file
          (let ([path (ex-n-to-path n)])
            (load path)
-           (display (string-append "Loaded " path "\n")))]
+           (display (format "Loaded ~s" path))
+           (newline))]
         [(= (length args) 1)
          ; reset the interpreter and load an exercise file.
          (cond [(not (string? n)) 
@@ -47,6 +49,9 @@
     (apply f args)))
 
 #| Startup |#
+
+; Loads an exercise file if there is a file called "n"
+; present that contains the name of the exercise to load.
 ((lambda ()
   (define (read-n)
     (if (not (file-exists? "n"))

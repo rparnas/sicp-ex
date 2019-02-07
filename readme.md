@@ -3,16 +3,15 @@ This project intends to reduce the pain points of completing the exercises from 
 
 # Features
 * One stub file per exercise including the exercise prompt as a plaintext scheme comment.
-* Reset the global enviornment quickly.
-* Ensure the global enviornment only has the context of the exercise being worked on.
+* Build exercises answers on one another while avoiding copy-pasting code. 
+* Reset the global environment to the context of any single exercise without moving through the commit history.
 
 # Instructions
-
-Checkout this repository, `sicp-ex`. Write the answers to each exercise in its respective file under the `\exercises\` directory. Start your interpreter using the provided bash script `ex` in the repository root, passing the name of your interpreter like `.\ex scheme` or `.\ex racket`. This starts your interpreter and gives you full access to the utilities provided in `ex.ss`. These utilities are functions meant to be available to every exercise. Feel free to add your own.
-
-At the top of your exercise file you may load the contents of previous exercises using `load-ex` like `(load-ex "2.83")`. This displays the list of files loaded to help you keep track of the relationship between your exercise answers. It also avoids polluting the global environment with unecessary content.
-
-To load an exercise and reset the global enviornment completely, run `load-ex` with the additional #t parameter like `(load-ex "2.83" #t)`. This allows you to effectively roll back to any exercise, even if its content is loaded and built on in subsequent exercises.
+1. Checkout this repository, `sicp-ex`.
+2. Write answers to each exercise in the files at `\exercises\`.
+3. Start your interpreter using the bash script `ex` in the repository root, passing the name of your interpreter like `.\ex scheme` or `.\ex racket`. This provides access to the utilities in `ex.ss` which are functions available to every exercise. Feel free to add your own.
+4. In each exercise file, optionally load the contents of a previous exercise by adding `load-ex` to the source code of that file like `(load-ex "2.82")`.
+5. Reset your interpreter to the context of any given exercise by invoking `load-ex` in the REPL with the additional parameter #t like `(load-ex "2.83" #t)`. This is useful for jumping forward or backward between exercises or for clearing the global environment of test expressions or traces.
 
 # Details
 ## Exercise Files
@@ -29,9 +28,7 @@ Decrements the given number `n` by 1.
 Increments the given number `n` by 1.
 
 ### load-ex
-`(load-ex "2.53")`
-`(load-ex "2.53" #t)`
-Loads the answer file associated with the given exercise. If the optional #t argument is provided, resets the interpreter before doing so.
+`(load-ex exercise-n)` or `(load-ex exercise-n should-reset)` Given the string name of an exercise (i.e. "1.7" or "2.52") loads the file associated with that exercise. If the optional #t argument is provided, it exits and restarts the interpreter before loading the file.
 
 ### square
 `(square n)`

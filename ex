@@ -15,8 +15,9 @@ do
   fi
 
   # If file "n" is present this means the user wants to run
-  # a fresh interpreter and "ex.ss" is expected to load the
-  # exercise file indicated by the contents of "n".
+  # a fresh interpreter with the context of a new exercise.
+  # "ex.ss" will load the exercise file indicated by the
+  # contents of "n".
   if [ ! -f "n" ]; then
     break
   fi
