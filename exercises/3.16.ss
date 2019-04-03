@@ -21,3 +21,29 @@ return 3; return 4; return 7; never return at all.
 
 |#
 
+#| Code from book |#
+(define (count-pairs x)
+  (if (not (pair? x))
+      0
+      (+ (count-pairs (car x))
+         (count-pairs (cdr x))
+      1)))
+
+#| Answer -- on paper |#
+
+#| Tests |#
+(define-test (let* ([x (cons 1 (cons 2 (cons 3 '())))])
+               (count-pairs x))
+             3)
+
+(define-test (let* ([right (cons 2 '())]
+                    [left (cons 1 right)]
+                    [x (cons left right)])
+               (count-pairs x))
+             4)
+
+(define-test (let* ([bottom (cons 1 '())]
+                    [middle (cons bottom bottom)]
+                    [x (cons middle middle)])
+               (count-pairs x))
+             7)

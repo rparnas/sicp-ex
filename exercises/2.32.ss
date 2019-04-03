@@ -16,3 +16,20 @@ give a clear explanation of why it works:
 
 |#
 
+#| Answer |#
+(define (subsets s)
+  (if (null? s)
+      (list s)
+      (let ([rest (subsets (cdr s))])
+        (append rest (map (lambda (x) (cons (car s) x)) rest)))))
+
+#|
+
+For each element, it could be part of any of the subsets of
+the subsequent elements or it could be left out.
+
+|#
+
+#| Tests |#
+(define s '(1 2 3))
+(define-test (subsets s) '(() (3) (2) (2 3) (1) (1 3) (1 2) (1 2 3)))

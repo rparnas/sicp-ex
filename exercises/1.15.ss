@@ -29,3 +29,35 @@ b. What is the order of growth in space and number of steps
 
 |#
 
+#| Code from book |#
+
+(define (cube x) (* x x x))
+
+(define (p x) (- (* 3 x) (* 4 (cube x))))
+
+(define (sine angle)
+   (if (not (> (abs angle) 0.1))
+       angle
+       (p (sine (/ angle 3.0)))))
+
+#| Answer
+
+a. 5
+
+b. The input function is divided multiple times until it
+reaches a threshold: Theta(log(x()))
+
+|#
+
+#| Tests -- manual
+
+> (define p (tracize p))
+> (sine 12.15)
+(#<procedure p at 1.15.ss:1018> 0.049999999999999996)
+(#<procedure p at 1.15.ss:1018> 0.1495)
+(#<procedure p at 1.15.ss:1018> 0.4351345505)
+(#<procedure p at 1.15.ss:1018> 0.9758465331678772)
+(#<procedure p at 1.15.ss:1018> -0.7895631144708228)
+-0.39980345741334
+
+|#

@@ -30,3 +30,10 @@ square roots? Explain.
 
 |#
 
+#| Answer
+
+It will never terminate since the recursive call is
+evaluated before checking that the recursive call is
+needed. The algorithm relies on short-circuiting.
+
+|#

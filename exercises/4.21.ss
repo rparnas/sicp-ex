@@ -40,3 +40,31 @@ nor "letrec":
 
 |#
 
+(load-ex "4.20")
+
+#| Answer 
+
+a. It works and returns 3628800 or 10! See tests for fib implementation.
+
+b. See tests.
+
+|#
+
+#| Tests |#
+
+(define-test (eval-one
+  '((lambda (n)
+     ((lambda (fib) (fib fib n))
+      (lambda (fib n) (cond [(= n 0) 0] [(= n 1) 1] [else (+ (fib fib (- n 1)) (fib fib (- n 2)))]))))
+   10))
+  55)
+
+(define-test (eval-one '(begin
+  (define (f x)
+    ((lambda (even? odd?) (even? even? odd? x))
+     (lambda (ev? od? n)
+       (if (= n 0) true (od? ev? od? (- n 1))))
+     (lambda (ev? od? n)
+       (if (= n 0) false (ev? ev? od? (- n 1))))))
+  (cons (f 5) (f 10))))
+  '(false . true))

@@ -26,3 +26,33 @@ you'll need a way to print points:
 
 |#
 
+#| Code from book |#
+(define (print-point p)
+  (newline)
+  (display "(")
+  (display (x-point p))
+  (display ",")
+  (display (y-point p))
+  (display ")"))
+
+#| Answer |#
+
+(define (make-point x y)
+  (cons x y))
+(define (x-point p) (car p))
+(define (y-point p) (cdr p))
+
+(define (make-segment p0 p1)
+  (cons p0 p1))
+(define (start-segment s)
+  (car s))
+(define (end-segment s)
+  (cdr s))
+
+(define (midpoint-segment s)
+  (make-segment (/ (+ (x-point (start-segment s)) (x-point (end-segment s))) 2)
+                (/ (+ (y-point (start-segment s)) (y-point (end-segment s))) 2)))
+
+#| Tests |#
+(define-test (midpoint-segment (make-segment (make-point 1 5) (make-point -6 7)))
+             '(-5/2 . 6))

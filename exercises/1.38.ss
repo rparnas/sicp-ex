@@ -11,3 +11,19 @@ based on Euler's expansion.
 
 |#
 
+(load-ex "1.37")
+
+(define (e-euler k) 
+  (+ 2.0 (count-frac (lambda (i) 1)
+         (lambda (i)
+           (if (= (remainder i 3) 2)
+         (/ (+ i 1) 1.5)
+         1))
+         k)))
+
+#| Tests 
+
+> (e-euler 100)
+  2.7182818284590455 ; answer is 2.7182818284590452...
+
+|#

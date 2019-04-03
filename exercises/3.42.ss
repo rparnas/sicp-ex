@@ -36,3 +36,8 @@ versions of "make-account"?
 
 |#
 
+#| Answer 
+
+This behaves identically.
+
+|#

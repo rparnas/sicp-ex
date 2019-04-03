@@ -20,3 +20,29 @@ procedure shown above.
 
 |#
 
+#| Answer |#
+(define (cube x) (* x x x))
+
+(define (sum term a next b)
+  (if (> a b)
+      0
+      (+ (term a)
+         (sum term (next a) next b))))
+
+(define (simpson f a b n)
+  (define h (/ (- b a) n))
+  (define (y k) (f (+ a (* k h))))
+  (define (term k) (cond [(or (= k 0) (= k n)) (y k)]
+       [(odd? k) (* 4 (y k))]
+       [else (* 2 (y k))]))
+  (* (/ h 3) (sum term 0 (lambda (x) (+ 1 x)) n)))
+
+#| Tests -- manual
+
+> (exact->inexact (simpson (lambda (x) (/ 1 x)) 1 16 16) )
+2.783201164931861 ; approximation of log_2(16) or 4
+
+> (simpson cube 0 1 16)
+1/4 ; answer is 1/4
+
+|#

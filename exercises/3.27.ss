@@ -49,3 +49,20 @@ Would the scheme still work if we had simply defined
 
 |#
 
+#| Code from book |#
+(define (fib n)
+  (cond ((= n 0) 0)
+        ((= n 1) 1)
+        (else (+ (fib (- n 1)) (fib (- n 2))))))
+
+#| Answer |#
+
+#| Notes 
+            6 5 4 3 2 1 0
+> (fib 2): (0 0 0 0 1 1 1)  3 calls,  0 redundant ==>  0%
+> (fib 3): (0 0 0 1 1 2 1)  5 calls,  1 redundant ==> 20%
+> (fib 4): (0 0 1 1 2 3 2)  9 calls,  4 redundant ==> 44%
+> (fib 5): (0 1 1 2 3 5 3) 15 calls,  9 redundant ==> 60% 
+> (fib 6): (1 1 2 3 5 8 5) 25 calls, 18 redundant ==> 72%
+
+|#

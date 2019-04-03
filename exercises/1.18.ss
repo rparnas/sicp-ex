@@ -8,3 +8,9 @@ of steps.
 
 |#
 
+#| Answer 
+
+See 1.17.ss. I already wrote this algorithm as an iterative
+process.
+
+|#

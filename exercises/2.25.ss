@@ -9,3 +9,7 @@ will pick 7 from each of the following lists:
 
 |#
 
+#| Tests |#
+(define-test (car (cdaddr '(1 3 (5 7) 9))) 7)
+(define-test (caar '((7))) 7)
+(define-test (cadadr (cadadr (cadadr '(1 (2 (3 (4 (5 (6 7))))))))) 7)

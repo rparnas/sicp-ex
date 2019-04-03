@@ -22,3 +22,16 @@ eight-queens puzzle, assuming that the program in Exercise
 
 |#
 
+#| Answer
+
+Processing a column involves taking all possible layouts for
+subsequent columns and adding to the begining of those
+possiblities new positions. This algorithm is re-calculating
+the same "layouts for subsequent columns" multiple times,
+once per row.
+
+This will cause T^n time.
+
+It went from a linearly recursive to tree recursive process.
+
+|#

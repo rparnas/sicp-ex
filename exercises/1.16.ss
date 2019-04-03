@@ -16,3 +16,13 @@ about the design of iterative algorithms.)
 
 |#
 
+#| Answer |#
+
+(define (fast-expt b n)
+  (define (fast-expt-iter b n a) ; b=base, n=counter, a=result
+    (cond [(= n 0) a]
+          [(even? n) (fast-expt-iter (square b) (/ n 2) a)]
+          [else (fast-expt-iter  b (- n 1) (* a b))]))
+  (fast-expt-iter b n 1))
+  
+

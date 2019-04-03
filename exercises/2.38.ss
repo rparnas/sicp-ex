@@ -28,3 +28,16 @@ for any sequence.
 
 |#
 
+#| Answer  
+
+op should satisfy the commutative property to guarantee that
+fold-right and fold-left produce the same values for any
+sequence. For example + is commutative, division is not.
+
+|#
+
+(define nil '())
+(define-test (fold-right / 1 (list 1 2 3)) 3/2)
+(define-test (fold-left / 1 (list 1 2 3)) 1/6)
+(define-test (fold-right list nil (list 1 2 3)) '(1 (2 (3 ()))))
+(define-test (fold-left list nil (list 1 2 3)) '(((() 1) 2) 3))

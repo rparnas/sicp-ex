@@ -10,3 +10,9 @@ following procedure:
 
 |#
 
+#| Answer
+
+The if statement returns a procedure. If b is positive, a is
+added to b, otherwise b is subtracted from a.
+
+|#

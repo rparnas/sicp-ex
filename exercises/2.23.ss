@@ -23,3 +23,24 @@ Give an implementation of "for-each".
 
 |#
 
+#| Answer |#
+(define (for-each f ls)
+  (if (null? ls)
+      (void)
+      (begin
+        (f (car ls))
+        (for-each f (cdr ls)))))
+
+#| Tests
+
+> (for-each display (iota 10))
+0123456789
+
+|#
+
+#| Notes
+
+The order of execution for map is not specified unlike for-
+each.
+
+|#

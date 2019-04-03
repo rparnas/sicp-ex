@@ -11,3 +11,9 @@ works.
 
 |#
 
+#| Answer 
+
+Our evaluator represents procedures differently than the underlying scheme. Thus
+map will not work when we pass it such a representation of a procedure.
+
+|#

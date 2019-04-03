@@ -43,3 +43,4 @@ Which parts of the environment structure are shared between
 
 |#
 
+#| Answer -- on paper |#

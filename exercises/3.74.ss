@@ -12,6 +12,7 @@ signal with its associated zero-crossing signal would be
 
   ...  1 2 1.5 1 0.5 -0.1 -2 -3 -2 -0.5 0.2 3 4   ... 
   ...  0 0  0  0  0   -1   0  0  0   0   1  0 0   ... 
+       0 0  0  0  0    1   0  0  0   0  -1  0 0
 
 In Alyssa's system, the signal from the sensor is
 represented as a stream "sense-data" and the stream
@@ -48,3 +49,41 @@ Complete the program by supplying the indicated
 
 |#
 
+(load-ex "3.73")
+
+#| Code from book |#
+
+;;; guess
+(define sense-data
+  (list->stream '(1 2 1.5 1 0.5 -0.1 -2 -3 -2 -0.5 0.2 3 4)))
+
+;;; guess
+(define (sign-change-detector curr-value last-value)
+  (cond [(and (< curr-value 0) (> last-value 0)) -1]
+        [(and (> curr-value 0) (< last-value 0)) 1]
+        [else 0]))
+
+;;; renamed to make-zero-crossings-0
+(define (make-zero-crossings-0 input-stream last-value)
+  (cons-stream
+    (sign-change-detector
+      (stream-car input-stream)
+      last-value)
+    (make-zero-crossings-0
+      (stream-cdr input-stream)
+      (stream-car input-stream))))
+
+(define zero-crossings-0
+  (make-zero-crossings-0 sense-data 0))
+
+#| Answer |#
+(define zero-crossings-1
+  (stream-map sign-change-detector
+              sense-data
+              (cons-stream 0 sense-data)))
+
+#| Tests |#
+(define-test (map (lambda (i) (stream-ref zero-crossings-0 i)) (iota 13))
+             '(0 0 0 0 0 -1 0 0 0 0 1 0 0))
+(define-test (map (lambda (i) (stream-ref zero-crossings-1 i)) (iota 13))
+             '(0 0 0 0 0 -1 0 0 0 0 1 0 0))

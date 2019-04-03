@@ -52,3 +52,37 @@ and produces the output stream of voltages.
 
 |#
 
+(load-ex "3.72")
+
+#| Code from book |#
+(define (integral integrand initial-value dt)
+  (define int
+    (cons-stream initial-value
+                 (add-streams (scale-stream integrand dt)
+                              int)))
+  int)
+
+#| Answers |#
+
+(define (RC R C dt)
+  (lambda (i v0)
+    (add-streams (scale-stream i R)
+                 (integral (scale-stream i (/ 1.0 C)) v0 dt))))
+
+#| Tests |#
+
+;;; circuit with R= 5 ohms, C = 1 farad, 0.5 second time step
+(define RC1 (RC 5 1 0.5))
+
+(define-test (map (lambda (i) (stream-ref (RC1 ones 0) i)) (iota 5))
+             '(5 5.5 6.0 6.5 7.0))
+
+(define-test (map (lambda (i) (stream-ref (RC1 integers 2) i)) (iota 5))
+             '(7 12.5 18.5 25.0 32.0))
+
+#| Notes 
+
+I don't understand what the v equation means. You input v0 and yet the output
+stream at 0 does not equal v0.
+
+|#

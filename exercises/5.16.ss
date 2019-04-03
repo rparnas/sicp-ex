@@ -8,3 +8,8 @@ instruction. Make the machine model accept "trace-on" and
 
 |#
 
+(load-ex "5.15")
+
+#| Answer -- added to 5.15 |#
+
+#| Tests -- skipped |#

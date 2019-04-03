@@ -20,3 +20,18 @@ from Exercise 3.60.
 
 |#
 
+(load-ex "3.60")
+
+#| Answer |#
+(define (invert-unit-series s)
+  (cons-stream 1 (scale-stream (mul-series (stream-cdr s)
+                                           (invert-unit-series s))
+                               -1)))
+
+#| Tests |#
+(define-test (let* ([s (list->stream '(1 2 3 4))]
+                    [one (mul-series s (invert-unit-series s))])
+                  (list (stream-ref one 0)
+                        (stream-ref one 1)
+                        (stream-ref one 2)))
+              (list 1 0 0))

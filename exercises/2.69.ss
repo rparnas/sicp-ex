@@ -22,3 +22,43 @@ representation.)
 
 |#
 
+#| Code from book |#
+(define (generate-huffman-tree pairs)
+  (successive-merge (make-leaf-set pairs)))
+
+(define (adjoin-set x set)
+  (cond ((null? set) (list x))
+        ((< (weight x) (weight (car set))) (cons x set))
+        (else (cons (car set)
+                    (adjoin-set x (cdr set))))))
+
+(define (make-leaf-set pairs)
+  (if (null? pairs)
+      '()
+      (let ((pair (car pairs)))
+        (adjoin-set (make-leaf (car pair)
+                               (cadr pair))
+                    (make-leaf-set (cdr pairs))))))
+
+#| Answer |#
+(load-ex "2.68")
+
+(define (successive-merge items)
+  (cond [(null? items) items]
+        [(null? (cdr items)) (car items)]
+        [else (let ([smallest (car items)]
+                    [second-smallest (cadr items)]
+                    [rest (cddr items)])
+                (successive-merge (adjoin-set (make-code-tree smallest second-smallest) rest)))]))
+
+#| Tests |#
+(define-test (generate-huffman-tree '((A 4) (B 2) (C 1) (D 1)))
+             '((leaf A 4)
+               ((leaf B 2) ((leaf D 1) (leaf C 1) (D C) 2) (B D C) 4)
+               (A B D C)
+               8))
+(define-test sample-tree
+             '((leaf A 4)
+               ((leaf B 2) ((leaf D 1) (leaf C 1) (D C) 2) (B D C) 4)
+               (A B D C)
+               8))

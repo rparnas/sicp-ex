@@ -13,3 +13,52 @@ b. in terms of atomic "test-and-set!" operations.
 
 |#
 
+#| Answer |#
+
+;;; a. protect count with a mutex.
+(define (make-semaphore n)
+  (let ([count n]
+        [mutex (make-mutex)])
+  (define (the-semaphore m)
+    (cond [(eq? m 'acquire)
+           (mutex 'aquire)
+           (cond [(= count 0)
+                  (mutex 'release)
+                  (the-semaphore 'aquire)] ; retry
+                 [else
+                  (set! count (- count 1))
+                  (mutex 'release)])]
+          [(eq? m 'release)
+           (mutex 'aquire)
+           (set! count (+ count 1))
+           (mutex 'release)]))
+  the-semaphore))
+
+;;; b. use test-and-set!, clear! directly instead of as a mutex.
+(define (make-semaphore n)
+  (let ([count 0]
+        [cell (list #f)])
+  (define (the-semaphore m)
+    (cond [(eq? m 'acquire)
+           (if (test-and-set! cell)
+               (the-semaphore 'aquire)
+               (cond [(= count 0)
+                      (clear! cell)
+                      (the-semaphore 'aquire)]
+                     [else
+                      (set! count (+ count 1))
+                      (clear! cell)]))]
+           [(eq? m 'release)
+            (if (test-and-set! cell)
+                (the-semaphore 'release)
+                (begin
+                  (set! count (+ count 1))
+                  (clear! cell)))]))
+  the-semaphore))
+
+#| Notes
+
+It would better to change the cell to store an integer count and just redefine
+make-mutex in terms of semaphores.
+
+|#

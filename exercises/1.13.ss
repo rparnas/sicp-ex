@@ -8,3 +8,4 @@ Fib(n) = (Phi^n - Psi^n) / sqrt(5).
 
 |#
 
+#| Answer on paper |#

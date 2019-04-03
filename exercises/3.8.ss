@@ -17,3 +17,30 @@ evaluated from right to left.
 
 |#
 
+; f(0) + f(1) --> 0
+; f(1) + f(0) --> 1
+
+; the 0th, 2nd, 4th, etc. call returns 0.
+; the 1th, 2nd, 4rd, etc. call returns the argument previously invoked.
+(define f
+  (let ([call-count 0]
+        [last-x #f])
+    (lambda (x)
+      (let ([result (if (even? call-count) 0 last-x)])
+        (set! call-count (+ 1 call-count))
+        (set! last-x x)
+        result))))
+
+#| Tests
+
+> (f 0)
+0
+> (f 1)
+0
+
+> (f 1)
+0
+> (f 0)
+1
+
+|#

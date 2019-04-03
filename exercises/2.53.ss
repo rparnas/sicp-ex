@@ -13,3 +13,11 @@ to evaluating each of the following expressions?
 
 |#
 
+#| Tests |#
+(define-test (list 'a 'b 'c) '(a b c))
+(define-test (list (list 'george)) '((george)))
+(define-test (cdr '((x1 x2) (y1 y2))) '((y1 y2)))
+(define-test (cadr '((x1 x2) (y1 y2))) '(y1 y2))
+(define-test (pair? (car '(a short list))) #f)
+(define-test (memq 'red '((red shoes) (blue socks))) #f)
+(define-test (memq 'red '(red shoes blue socks)) '(red shoes blue socks))

@@ -8,3 +8,29 @@ are S_0, S_0 + S_1, S_0 + S_1 + S_2,.... For example,
 
 |#
 
+#| Answer 
+
+(partial-sums i1)
+p1: i1 = 1
+p2: p1 + i2 = 3
+p3: p2 + i3 = 6
+p4: p3 + i4 = 10
+...
+
+|#
+
+(load-ex "3.54")
+
+(define (partial-sums s)
+  (cons-stream (stream-car s)
+               (add-streams (partial-sums s)
+                            (stream-cdr s))))
+#| Tests |#
+(define (partial-sums-integers n)
+  (stream-ref (partial-sums integers) (- n 1)))
+
+(define-test (partial-sums-integers 1) 1)
+(define-test (partial-sums-integers 2) 3)
+(define-test (partial-sums-integers 3) 6)
+(define-test (partial-sums-integers 4) 10)
+(define-test (partial-sums-integers 5) 15)

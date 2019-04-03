@@ -7,7 +7,8 @@ sequence. Since the value of an expression in a sequence
 other than the last one is not used (the expression is there
 only for its effect, such as assigning to a variable or
 printing), there can be no subsequent use of this value
-(e.g., as an argument to a primitive procedure) that will
+(e.g., as an argument to a primitive pro
+cedure) that will
 cause it to be forced. Cy thus thinks that when evaluating
 sequences, we must force all expressions in the sequence
 except the final one. He proposes to modify "eval-sequence"
@@ -70,3 +71,32 @@ the text, or some other approach?
 
 |#
 
+#| Answer 
+
+a. Assuming display isn't a primitive procedure, Ben is right about for-each
+because the procedure display is forced as it is the operation of an
+application. The lazy argument passed to display is forced at some point by the
+display procedure thus everything we wrote gets evaulated.
+
+;;; original from 4.1
+(define (eval-sequence exps env)
+  (cond [(last-exp? exps) (eval (first-exp exps) env)]
+        [else (eval (first-exp exps) env)
+              (eval-sequence (rest-exps exps) env)]))
+
+b. With the original eval-sequence (p1 1) ==> (1 2). The set! expresssion is not
+delayed here because it is a special form. (p2 1) ==> 1. The set! expression
+never gets evaluated because it is passed as an argument in an application, and
+that argument is only referenced in the head of the sequence inside the
+operator. Changing eval-sequence does not affect p1 but it causes (p2 1) ==> (1
+2) because now all elements in a sequence are forced.
+
+c. Changing eval-sequence does not affect the example in part a. because the
+procedures used in the for-each happen to force the arguments in the sequence
+even if the eval-sequence itself does not.
+
+d. If the general idea of lazy is "force values only when needed" the new eval-
+sequence here seems to violate that principle. This solution for an issue
+related to side-effects is too invasive.
+
+|#

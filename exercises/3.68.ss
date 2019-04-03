@@ -17,3 +17,12 @@ integers integers)" using Louis's definition of "pairs".
 
 |#
 
+(load-ex "3.67")
+
+#| Answer 
+
+In order to invoke interleave, a recursive call to pairs in invoked. This
+recurses infinitely for infinite streams s and t. If one or both streams is
+finite it will eventually crash trying to cdr an empty stream.
+
+|#

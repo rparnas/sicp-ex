@@ -19,3 +19,21 @@ the above expression is evaluated.
 
 |#
 
+#| Answer -- on paper |#
+
+#| Notes
+(set-value! connector:a new-value:10 informant:'user)
+  (set-my-value newval:10 setter:'user)
+    (define (set-my-value newval:10 setter:'user)
+      (cond [(not (has-value? me)) => #t
+             (set! value newval) => change value from #f to 10
+             (set! informant setter) => change informant from #f to 'user
+             (for-each-except setter
+                              inform-about-value
+                              constraints)]
+            . . .
+    (define (for-each-except exception procedure list)
+            . . .
+
+#|
+

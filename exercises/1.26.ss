@@ -26,3 +26,12 @@ process." Explain.
 
 |#
 
+#| Answer
+
+The original involves halving a value each iteration until
+you reach some base making it involve log2(n) iterations. In
+the new version you halve a value and make two calls
+doubling the size of the tree each time. This is log(n)
+levels but 2^log2(n) calls = n calls.
+
+|#

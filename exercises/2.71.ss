@@ -9,3 +9,10 @@ frequent symbol?
 
 |#
 
+#| Answer on paper 
+
+How many bits for the most frequent symbol? 1
+
+How many bits for the least-frequent symbol? n-1
+
+|#

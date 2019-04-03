@@ -8,3 +8,25 @@ successive "cdr"s would go into an infinite loop. Exercise
 
 |#
 
+#| Answer |#
+(define (is-cycle? ls)
+  (define (iter x)
+    (cond [(not (pair? x))
+           #f]
+          [(eq? (car ls) (car x))
+           #t]
+          [else (iter (cdr x))]))
+  (if (not (pair? ls))
+      #f
+      (iter (cdr ls))))
+
+#| Test |#
+(define-test (is-cycle? 1) #f)
+
+(define-test (is-cycle? '(1 2 3)) #f)
+
+(define-test (begin
+              (define x (cons 1 (cons 2 (cons 3 '()))))
+              (append! x x)
+              (is-cycle? x))
+             #t)

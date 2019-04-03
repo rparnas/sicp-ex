@@ -43,3 +43,38 @@ nonnegative number less than its input.
 
 |#
 
+#| Code from book |#
+(define (random-in-range low high)
+  (let ((range (- high low)))
+    (+ low (random range))))
+
+(define (monte-carlo trials experiment)
+  (define (iter trials-remaining trials-passed)
+    (cond ((= trials-remaining 0)
+           (/ trials-passed trials))
+          ((experiment)
+           (iter (- trials-remaining 1) (+ trials-passed 1)))
+          (else
+           (iter (- trials-remaining 1) trials-passed))))
+  (iter trials 0))
+
+#| Answer |#
+(define (estimate-integral P x1 x2 y1 y2 trials)
+  (monte-carlo trials (lambda ()
+    (let ([x (random-in-range x1 x2)]
+          [y (random-in-range y1 y2)])
+      (P x y)))))
+
+(define (estimate-pi-using-unit-circle)
+  (define (in-unit-circle x y)
+    (<= (+ (expt (- x 1.0) 2.0)
+           (expt (- y 1.0) 2.0))
+        1))
+  (* 4.0 (estimate-integral in-unit-circle 0.0 2.0 0.0 2.0 10000000)))
+
+#|
+
+> (estimate-pi-using-unit-circle)
+3.1417428 ; real value is 3.14159
+
+|#

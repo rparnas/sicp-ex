@@ -13,3 +13,17 @@ left-to-right order. For example,
 
 |#
 
+#| Answer |#
+(define (fringe ls)
+  (define (leaf? x)
+    (not (pair? x)))
+  (define (iter ls result)
+    (if (null? ls)
+        result
+        (iter (cdr ls)
+              (append result ((if (leaf? (car ls)) list fringe) (car ls))))))
+  (iter ls '()))
+
+#| Tests |#
+(define x (list (list 1 2) (list 3 4)))
+(define-test (fringe (list x x)) '(1 2 3 4 1 2 3 4))

@@ -32,3 +32,80 @@ the queue.
 
 |#
 
+#| Code from book |#
+(define (front-ptr queue) (car queue))
+
+(define (rear-ptr queue) (cdr queue))
+
+(define (set-front-ptr! queue item)
+  (set-car! queue item))
+
+(define (set-rear-ptr! queue item)
+  (set-cdr! queue item))
+
+(define (empty-queue? queue)
+  (null? (front-ptr queue)))
+
+(define (make-queue) (cons '() '()))
+
+(define (front-queue queue)
+  (if (empty-queue? queue)
+    (error "front-queue" "called with an empty queue")
+    (car (front-ptr queue))))
+
+(define (insert-queue! queue item)
+  (let ((new-pair (cons item '())))
+    (cond ((empty-queue? queue)
+           (set-front-ptr! queue new-pair)
+           (set-rear-ptr! queue new-pair)
+           queue)
+          (else
+           (set-cdr! (rear-ptr queue) new-pair)
+           (set-rear-ptr! queue new-pair)
+           queue))))
+
+(define (delete-queue! queue)
+  (cond ((empty-queue? queue)
+         (error "delete-queue!" "called with an empty queue" queue))
+        (else (set-front-ptr! queue (cdr (front-ptr queue)))
+              queue)))
+
+#| Answer 
+
+The queue is a cons cell with the car being a list of all items in the queue and
+the cdr being a pointer to the tail item in that same list. So every time you
+are going to see both the entire list and the tail item in the list.
+
+A special case is after all items in the queue are deleted. There is still a
+pointer to the former final item in the list but this is moot. It exists because
+the delete operation didn't bother to clear it out because it causes no problems
+according to the queue api.
+
+|#
+
+(define (queue->string queue)
+  (string-append "queue: "
+                 (format "~a" (front-ptr queue))))
+
+(define (display-queue queue)
+  (display (queue->string queue))
+  (newline))
+
+(define-test (let ([ls '()])
+               (define (out) (set! ls (append ls (list (queue->string q1)))))
+               (define q1 (make-queue))
+               (out)
+               (insert-queue! q1 'a)
+               (out)
+               (insert-queue! q1 'b)
+               (out)
+               (delete-queue! q1)
+               (out)
+               (delete-queue! q1)
+               (out)
+               ls)
+             (list "queue: ()"
+                   "queue: (a)"
+                   "queue: (a b)"
+                   "queue: (b)"
+                   "queue: ()"))

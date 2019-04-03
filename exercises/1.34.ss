@@ -16,3 +16,13 @@ evaluate the combination "(f f)"? Explain.
 
 |#
 
+#| Answer
+
+An error will occur because ventually it will try to apply 2
+as a procedure.
+
+(f f)
+(f 2)
+(2 2)
+
+|#

@@ -18,3 +18,18 @@ eliminated by the compiler's "preserving" mechanism:
 
 |#
 
+#| Answer 
+
+|               | env      | env               | argl         | proc        |
+|  expression   | operator | non-last operands | each operand | operand seq |
+| ------------- | -------- | ----------------- | ------------ | ----------- |
+| (f 'x 'y)     |          |                   |              |             |
+| ((f) 'x 'y)   | needed   |                   |              |             |
+| (f (g 'x) y)  |          | needed            | needed       | needed      |
+| (f (g 'x) 'y) |          |                   | needed       | needed      |
+
+Tecnically for the last two, "argl for each operand" is only needed for the
+first operand but not the second, but I'll leave as needed since the
+explicit-control evaluator doesn't differentiate that.
+
+|#

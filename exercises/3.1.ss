@@ -17,3 +17,14 @@ sum; for example
 
 |#
 
+#| Answer |#
+(define (make-accumulator initial)
+  (let ([x initial])
+    (lambda (y)
+      (set! x (+ x y))
+      x)))
+
+(define-test (begin
+               (define A (make-accumulator 5))
+               (list (A 10) (A 10)))
+             '(15 25))

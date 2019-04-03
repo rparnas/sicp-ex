@@ -80,3 +80,58 @@ guaranteed safe with respect to each other.)
 
 |#
 
+#| Code from book |#
+(define (queens board-size)
+  (define (queen-cols k)
+    (if (= k 0)
+        (list empty-board)
+        (filter
+         (lambda (positions) (safe? k positions))
+         (flatmap
+          (lambda (rest-of-queens)
+            (map (lambda (new-row)
+                   (adjoin-position
+                    new-row k rest-of-queens))
+                 (enumerate-interval 1 board-size)))
+          (queen-cols (- k 1))))))
+  (queen-cols board-size))
+
+#| Answer |#
+(load-ex "2.40")
+
+(define empty-board '())
+
+(define (adjoin-position row col rest-of-queens)
+  (append (list (make-pos row col)) rest-of-queens))
+
+(define (make-pos row col)
+  (cons row col))
+
+(define (pos-row pos)
+  (car pos))
+
+(define (pos-col pos)
+  (cdr pos))
+
+(define (none? p seq)
+  (null? (filter p seq)))
+
+(define (safe? k positions)
+  (let* ([queen-in-kth (car (filter (lambda (p) (= (pos-col p) k)) positions))]
+         [col (pos-col queen-in-kth)]
+         [row (pos-row queen-in-kth)]
+         [others (remove queen-in-kth positions)])
+    (and (none? (lambda (other) (= (pos-row other) row)) others)
+         (none? (lambda (other) (= (pos-col other) col)) others)
+         (none? (lambda (other) (= (abs (- col (pos-col other))) (abs (- row (pos-row other))))) others))))
+
+#| Tests |#
+(define-test (queens 1) '(((1 . 1))))
+(define-test (queens 2) '())
+(define-test (queens 3) '())
+(define-test (queens 4) '(((3 . 4) (1 . 3) (4 . 2) (2 . 1))
+                          ((2 . 4) (4 . 3) (1 . 2) (3 . 1))))
+(define-test (length (queens 5)) 10)
+(define-test (length (queens 6)) 4)
+(define-test (length (queens 7)) 40)
+(define-test (length (queens 8)) 92)

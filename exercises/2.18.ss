@@ -9,3 +9,13 @@ reverse order:
 
 |#
 
+#| Answser |#
+(define (reverse ls)
+  (define (iter ls result)
+    (if (null? ls)
+        result
+        (iter (cdr ls) (append (list (car ls)) result))))
+  (iter ls '()))
+
+#| Tests |#
+(define-test (reverse (list 1 4 9 16 25)) '(25 16 9 4 1))

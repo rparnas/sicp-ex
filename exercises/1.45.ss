@@ -21,3 +21,51 @@ available as primitives.
 
 |#
 
+#| Answer |#
+
+(load-ex "1.36")
+(load-ex "1.43")
+
+(define (average a b)
+  (/ (+ a b) 2))
+
+(define (average-damp f)
+  (lambda (x) (average x (f x))))
+
+(define (nr-test x n damps)
+  (fixed-point
+   ((repeated average-damp damps) (lambda (y) (/ x (expt y (- n 1)))))
+   1.0))
+
+#|
+
+Running test in the format (nr-test 50 n damps) to see how
+many damps are needed until the function terminates.
+
+n={2, 3} --> 1 damp
+n={4, 5, 6, 7} --> 2 damp
+n={8, 9, 10, 11, 12, 13, 14, 15} --> 3 damp
+
+Seems like (floor (log2 n)) damps are needed.
+
+|#
+
+(define (nth-root x n)
+  (fixed-point
+   ((repeated average-damp (floor (log n 2))) (lambda (y) (/ x (expt y (- n 1)))))
+   1.0))
+
+#| Tests -- manual
+
+> (map (lambda (n) (nth-root 50 n)) '(2 4 6 8 10 12 100 200 1000))
+(7.071067811865477 
+ 2.6591479484724947 
+ 1.919385294102911 
+ 1.6306894089657187
+ 1.4787565109488354 
+ 1.3854155762917304 
+ 1.0398920482147518
+ 1.0197554540946159 
+ 1.003917261685058))
+
+ |#

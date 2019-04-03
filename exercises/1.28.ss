@@ -27,3 +27,36 @@ way to make "expmod" signal is to have it return 0.
 
 |#
 
+#| Answer |#
+
+(define (square-check x m)
+  (if (and (not (or (= x 1) (= x (- m 1))))
+           (= (remainder (* x x) m) 1))
+      0
+      (remainder (* x x) m)))
+
+(define (even? n)
+  (= (remainder n 2) 0))
+
+(define (expmod base exp m)
+  (cond ((= exp 0) 1)
+        ((even? exp)
+          (square-check (expmod base (/ exp 2) m) m))
+        (else
+          (remainder (* base (expmod base (- exp 1) m))
+                     m))))
+
+(define (miller-rabin-test n)
+  (define (try-it a)
+     (= (expmod a (- n 1) n) 1))
+  (try-it (+ 2 (random (- n 2)))))
+
+#| Tests |#
+(define primes '(3 5 7 11 13 17 19 23 29 31 37 41 43 47 53 59 61 67 71 73 79 83 89 97 101 103 107 109 113 127 131 137 139 149 151 157 163 167 173 179 181 191 193 197 199))
+(define carmichaels '(561 41041 825265 321197185 5394826801))
+
+(define-test (map miller-rabin-test primes)
+             (map (lambda (x) #t) primes))
+
+(define-test (map miller-rabin-test carmichaels)
+             (map (lambda (x) #f) carmichaels))

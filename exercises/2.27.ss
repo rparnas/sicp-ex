@@ -16,3 +16,22 @@ x
 
 |#
 
+#| Answer |#
+(load-ex "2.18")
+
+(define (deep-reverse ls)
+  (define (iter ls result)
+    (if (null? ls)
+        result
+        (let* ([current (car ls)]
+               [current (if (not (pair? current)) 
+                            current 
+                            (deep-reverse current))])
+          (iter (cdr ls) (append (list current) result)))))
+  (iter ls '()))
+
+#| Tests |#
+
+(define x (list (list 1 2) (list 3 4)))
+(define-test (reverse x) '((3 4) (1 2)))
+(define-test (deep-reverse x) '((4 3) (2 1)))

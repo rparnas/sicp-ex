@@ -51,3 +51,26 @@ a recursive process.
 
 |#
 
+#| Answer |#
+
+(define (count-frac n d k)
+  (define (iter k result)
+    (if (= k 0)
+        result
+        (iter (- k 1)  (/ (n k) (+ (d k) result)))))
+  (iter k 0))
+
+(define (count-frac-r n d k)
+  (define (recur i)
+    (if (> i k)
+        0
+        (/ (n i) (+ (d i) (recur (+ i 1))))))
+  (recur 0))
+
+#| Tests
+
+;; The 11-th k-term approximates 1/phi to 4 places
+> (count-frac (lambda (i) 1.0) (lambda (i) 1.0) 11)
+0.6180555555555556
+
+|#

@@ -26,3 +26,4 @@ program does not "define" or "set!" these names.)
 
 |#
 
+#| Answer -- Added to 5.40 |#

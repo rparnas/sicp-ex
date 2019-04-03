@@ -21,3 +21,17 @@ Exercise 1.42.
 
 |#
 
+#| Code from book |#
+(define (dec x) (- x 1))
+
+#| Answer |#
+
+(load-ex "1.42")
+
+(define (repeated f n)
+  (if (= n 1)
+      f
+      (compose f (repeated f (dec n)))))
+
+#| Tests |#
+(define-test ((repeated square 2) 5) 625)

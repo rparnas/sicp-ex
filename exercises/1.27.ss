@@ -8,3 +8,10 @@ try your procedure on the given Carmichael numbers.
 
 |#
 
+#| Answer |#
+(load-ex "1.24")
+
+#| Yes, they do. |#
+
+#| Tests |#
+(define-test (fast-prime? 561 5) #t)

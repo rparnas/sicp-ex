@@ -8,3 +8,23 @@ to signal an error if it occurs.
 
 |#
 
+#| Answer |#
+
+(load-ex "2.9")
+
+(define (spans-zero-interval i)
+  (and (<= (lower-bound i) 0) (>= (upper-bound i) 0)))
+
+(define (div-interval a b)
+  (if (spans-zero-interval b)
+      (error "div-interval" "The divisor spans zero")
+      (mul-interval a (make-interval (/ 1.0 (upper-bound b))
+     (/ 1.0 (lower-bound b))))))
+
+#| Tests |#
+(define a (make-interval 1 16))
+(define b (make-interval -5 0))
+
+;; > (div-interval a b)
+;; Exception in div-interval: The divisor spans zero
+;; Type (debug) to enter the debugger.

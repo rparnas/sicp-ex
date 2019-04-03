@@ -11,3 +11,17 @@ representation for segments with a constructor
 
 |#
 
+#| Answer |#
+(define (make-segment a b)
+  (cons a b))
+
+(define (start-segment s)
+  (car s))
+
+(define (end-segment s)
+  (cdr s))
+
+#| Tests |#
+(define s (make-segment 'start 'end))
+(define-test (start-segment s) 'start)
+(define-test (end-segment s) 'end)

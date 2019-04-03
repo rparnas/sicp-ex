@@ -20,3 +20,16 @@ forever) violates the intended behavior of "halts?".
 
 |#
 
+#| Answer 
+
+Assume it is possible to write halts?
+
+if (try try) halts this implies (halts? try try) is true.
+This contradicts that if (halts? try try) is true (try try) should run run-forever forever.
+
+if (try try) runs forever this implies (halts? try try) is true.
+This contradicts that if (halts? try try) is false (try try) should return 'halted.
+
+These are contradictions due to the bad assumption it is possible to write halts?
+
+|#

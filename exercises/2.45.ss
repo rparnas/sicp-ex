@@ -12,3 +12,11 @@ same behaviors as the ones already defined.
 
 |#
 
+#| Answer |#
+(define (split a b)
+  (define (iter paitner n)
+    (if (= n 0)
+        painter
+        (let ([smaller (iter painter (- n 1))])
+          (a painter (b smaller smaller)))))
+  iter)

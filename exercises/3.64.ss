@@ -13,3 +13,26 @@ by
 
 |#
 
+#| Answer |#
+(load-ex "3.63")
+
+(define (stream-limit s tolerance)
+  (define (iter s)
+    (let* ([head (stream-car s)]
+           [tail (stream-cdr s)]
+           [next (stream-car tail)])
+      (if (< (abs (- head next)) tolerance)
+          next
+          (iter tail))))
+  (iter s))
+
+(define (my-sqrt x tolerance)
+  (stream-limit (sqrt-stream x) tolerance))
+
+#| Tests 
+
+> (my-sqrt 55 0.001)
+  7.416198487095675
+; 7.416198487095662...
+
+|#

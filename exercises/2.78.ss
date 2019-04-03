@@ -19,3 +19,33 @@ rather than as pairs whose "car" is the symbol
 
 |#
 
+#| Answer |#
+(load-ex "2.77")
+
+(define (attach-tag type-tag contents)
+  (cond [(eq? 'scheme-number type-tag) contents]
+        [else (cons type-tag contents)]))
+
+(define (type-tag datum)
+  (cond [(pair? datum) (car datum)]
+        [(number? datum) 'scheme-number]
+        [else (error "type-tag" "bad datum" datum)]))
+
+(define (contents datum)
+  (cond [(pair? datum) (cdr datum)]
+        [(number? datum) datum]
+        [else (error "contents" "bad datum" datum)]))
+
+#| Tests |#
+(define-test (make-scheme-number 5)
+             5)
+(define-test (type-tag (make-scheme-number 5)) 
+             'scheme-number)
+(define-test (contents (make-scheme-number 5)) 
+             5)
+(define-test (add (make-scheme-number 2) (make-scheme-number 2))
+             4)
+(define-test (type-tag (add (make-scheme-number 2) (make-scheme-number 2)))
+             'scheme-number)
+(define-test (contents (add (make-scheme-number 2) (make-scheme-number 2)))
+             4)

@@ -15,3 +15,29 @@ abstraction of these square-root and cube-root procedures.)
 
 |#
 
+#| Answer |#
+
+(define (cube x)
+  (* x x x))
+
+(define (cbrt-iter guess x)
+  (if (good-enough? guess x)
+      guess
+      (cbrt-iter (improve guess x) x)))
+
+(define (improve guess x)
+  (define y guess)
+    (/ (+ (/ x (* y y)) (* 2 y)) 3))
+
+(define (good-enough? guess x)
+  (< (abs (- (cube guess) x)) 0.001))
+
+(define (cbrt x)
+  (cbrt-iter 1.0 x))
+
+#| Tests -- manual
+
+> (cbrt 7)
+1.9129320405969417 ; answer is 1.91293118277...
+
+|#

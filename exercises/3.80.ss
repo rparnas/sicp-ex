@@ -41,3 +41,34 @@ differential equations is shown in Figure 3.37.
 
 |#
 
+(load-ex "3.79")
+
+#| Answer |#
+
+;;; return (cons [voltage of capacitor] [current of inductor])
+(define (RLC R L C dt)
+  (lambda (vc0 iL0)
+    (define vC (integral (delay dvC) vc0 dt))
+    (define iL (integral (delay diL) iL0 dt))
+    (define dvC (scale-stream iL (/ -1 C)))
+    (define diL (add-streams 
+                  (scale-stream vC (/ 1 L))
+                  (scale-stream iL (- (/ R L)))))
+    (cons vC iL)))
+
+#| Tests 
+
+;;; R=1, C=0.2, L=1, dt=0.1, iL0=0, vc0=10
+(define example ((RLC 1 1 0.2 0.1) 10 0 ))
+(define example-vc (car example))
+(define example-il (cdr example))
+
+> (map (lambda (i) (stream-ref example-vc i)) (iota 6))
+(10 10 9.5 8.55 7.220000000000001 5.5955)
+
+> (map (lambda (i) (stream-ref example-il i)) (iota 6))
+(0 1.0 1.9 2.66 3.249 3.6461)
+
+Did not manually compute answers, looked up first 5 elements of the streams.
+
+|#

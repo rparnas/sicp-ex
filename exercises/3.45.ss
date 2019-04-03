@@ -37,3 +37,12 @@ consider what happens when "serialized-exchange" is called.
 
 |#
 
+#| Answer 
+
+Consider an operation that affects two accounts. You would add this operation to
+both serializers however when the operation tries to make changes to either of
+the accounts by invoking something like withdraw, that change will be blocked
+forever because the join operation itself is already on the serializer and it
+will never complete. I.e. a deadlock will occurr.
+
+|#

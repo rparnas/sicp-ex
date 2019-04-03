@@ -42,3 +42,26 @@ for the two ways of computing. This is a serious complaint.
 
 |#
 
+#| Answer
+
+An interval in terms of center c and percent p is:
+
+{ c-(c*p), c+(c*p) }
+{ c*(1-p), c*(1+p) }
+
+Given two positive intervals a and b, a*b is:
+
+{ (ca*(1-pa)) * (cb*(1-pb)), (ca*(1+pa)) * (cb*(1+pb)) }
+{ ca*cb*(1-pa)*(1-pb), ca*cb*(1+pa)*(1+pb) }
+{ ca*cb*(1 - pa - pb + pa*pb), ca*cb*(1 + pa + pb - pa*pb }
+
+The term pa*pb in the endpoints of the interval is going to
+have little influence. You can assume it is near zero for
+small values of pa and pb:
+
+{ ca*cb*(1- pa - pb), ca*cb*(1 + pa + pb) }
+
+So the product intervals percent is approximately pa + pb.
+
+|#
+

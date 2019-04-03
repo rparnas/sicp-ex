@@ -1,0 +1,2 @@
+gcc ./repl/repl/main.c -o 552-repl
+./552-repl

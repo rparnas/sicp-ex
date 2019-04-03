@@ -24,3 +24,19 @@ evaluate the consequent or the alternative expression.)
 
 |#
 
+#| Answer
+
+applicative-order
+(test 0 (p))
+(test 0 (p))
+Never terminates. Before I invoke test its arguments are
+substituted until they become primitives but this means
+(p) is substituted with (p).
+
+normal-order
+(test 0 (p))
+(if (= 0 0) 0 (p))
+(if #t 0 (p))
+0
+
+|#

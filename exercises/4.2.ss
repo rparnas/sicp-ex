@@ -23,3 +23,21 @@ we will have to write "(call + 1 2)".
 
 |#
 
+#| Answer 
+
+a. This doesn't work because application? assumes that special forms that look
+like applications will be taken care of before reaching application?. In the
+updated eval, define is treated as a procedure to be applied and the rest of
+expression will be evaluated as arguments to be passed to that procedure.
+
+b. You can change applications to be a special form "call" like:
+
+|#
+
+(define (application? exp) (tagged-list? exp 'call))
+(define (operator exp) (cadr exp))
+(define (operands exp) (cddr exp))
+
+;;; no-operands?, first-operand, and rest-operand, remain unchanged.
+
+#| Tests -- skipped |#

@@ -20,3 +20,30 @@ the explicit-control evaluator as follows:
 
 |#
 
+(load-ex "5.47")
+
+#| Answer -- Some implemenation in 5.32 |#
+
+#| Tests |#
+
+(define (eval-one exp)
+  (let ([m (eval-machine)])
+    (set-register-contents! m 'exp exp)
+    (set-register-contents! m 'env (setup-environment))
+    (set-register-contents! m 'flag #f)
+    (start m)
+    (get-register-contents m 'val)))
+
+(define-test 
+  (eval-one '(begin 
+               (compile (define (x) 5)) 
+               (x)))
+  5)
+
+(define-test
+  (eval-one '(begin
+               (compile (define (x) 5))
+               (define (y) (x))
+               (compile (define (z) (y)))
+               (z)))
+  5)

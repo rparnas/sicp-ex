@@ -14,3 +14,11 @@ our definitions work in a normal-order language?
 
 |#
 
+#| Answer 
+
+In an applicative order language (factorial 5) will never terminate.
+
+In a normal-order language it will terminate because the recursive call to
+factorial will only be evaluated if needed.
+
+|#

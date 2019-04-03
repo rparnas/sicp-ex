@@ -16,3 +16,40 @@ and "(?relationship Adam Irad)".
 
 |#
 
+(load-ex "4.68")
+
+#| Answer |#
+(define db469 (append db463 '(
+  (rule (ends-with (?x) ?x))
+  (rule (ends-with (?head . ?tail) ?x)
+        (ends-with ?tail ?x))
+  (rule (relationship (son) ?s ?f)
+        (son-of ?s ?f))
+  (rule (relationship (grandson) ?s ?g)
+        (grandson-of ?s ?g))
+  (rule (relationship (great . ?rel) ?descendant ?ancestor)
+        (and (son-of ?descendant ?father)
+             (relationship ?rel ?father ?ancestor)
+             (ends-with ?rel grandson))))))
+
+#| Tests -- infrastructure |#
+(define-test (do-query db469 
+  '(ends-with (grandson) grandson))
+  '((ends-with (grandson) grandson)))
+(define-test (do-query db469 
+  '(ends-with (great grandson) grandson))
+  '((ends-with (great grandson) grandson)))
+
+#| Tests |#
+(define-test (do-query db469
+  '(relationship (great grandson) ?g ?ggs))
+  '((relationship (great grandson) Jabal Mehujael) 
+    (relationship (great grandson) Jubal Mehujael)
+    (relationship (great grandson) Irad Adam)
+    (relationship (great grandson) Mehujael Cain)
+    (relationship (great grandson) Methushael Enoch)
+    (relationship (great grandson) Lamech Irad)))
+
+(define-test (do-query db469
+  '(relationship ?relationship Irad Adam))
+  '((relationship (great grandson) Irad Adam)))

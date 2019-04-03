@@ -23,3 +23,24 @@ make a monitored version of the "sqrt" procedure:
 
 |#
 
+#| Answer |#
+(define (make-monitored f)
+  (let ([count 0])
+    (lambda (x)
+      (cond [(eq? 'how-many-calls? x) 
+             count]
+            [(eq? 'reset-count x)
+             (begin 
+              (set! count 0)
+              (void))]
+            [else
+             (begin
+              (set! count (+ count 1))
+              (f x))]))))
+
+#| Tests |#
+(define-test (begin
+               (define s (make-monitored sqrt))
+               (list (s 100)
+                     (s 'how-many-calls?)))
+              '(10 1))

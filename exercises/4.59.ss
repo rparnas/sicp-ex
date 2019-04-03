@@ -38,3 +38,42 @@ above rule, what query should she make to find this out?
 
 |#
 
+(load-ex "4.58")
+
+#| Code from book |#
+(set! test-db (append test-db '(
+  (meeting accounting (Monday "9am"))
+  (meeting administration (Monday "10am"))
+  (meeting computer (Wednesday "3pm"))
+  (meeting administration (Friday "1pm"))
+  (meeting whole-company (Wednesday "4pm")))))
+
+#| Answer |#
+
+;;; b.
+(set! test-db (append test-db '(
+  (rule (meeting-time ?person ?day-and-time)
+    (and (job ?person (?dept . ?any0))
+         (or (meeting ?dept ?day-and-time)
+             (meeting whole-company ?day-and-time)))))))
+
+#| Tests |#
+
+;;; a.
+(define-test (do-query test-db
+  '(meeting ?any0 (Friday ?any1)))
+  '((meeting administration (Friday "1pm"))))
+
+;;; b.
+(define-test (do-query test-db
+  '(meeting-time (Hacker Alyssa P) (Wednesday "3pm")))
+  '((meeting-time (Hacker Alyssa P) (Wednesday "3pm"))))
+(define-test (do-query test-db
+  '(meeting-time (Hacker Alyssa P) (Wednesday "9pm")))
+  '())
+
+;;; c.
+(define-test (do-query test-db 
+  '(meeting-time (Hacker Alyssa P) (Wednesday ?time)))
+  '((meeting-time (Hacker Alyssa P) (Wednesday "3pm"))
+   (meeting-time (Hacker Alyssa P) (Wednesday "4pm"))))

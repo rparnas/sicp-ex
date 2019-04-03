@@ -16,3 +16,21 @@ recursion.
 
 |#
 
+#| Answer |#
+(define (square-tree0 tree)
+  (cond [(null? tree) '()]
+        [(not (pair? tree)) (square tree)]
+        [else (cons (square-tree0 (car tree))
+                    (square-tree0 (cdr tree)))]))
+
+(define (square-tree1 tree)
+  (map (lambda (sub-tree)
+         (if (pair? sub-tree)
+             (square-tree1 sub-tree)
+             (square sub-tree)))
+       tree))
+
+#| Tests |#
+(define t (list 1 (list 2 (list 3 4) 5) (list 6 7)))
+(define-test (square-tree0 t) '(1 (4 (9 16) 25) (36 49)))
+(define-test (square-tree1 t) '(1 (4 (9 16) 25) (36 49)))

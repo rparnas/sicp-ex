@@ -19,3 +19,20 @@ compute, as in Exercise 1.37.
 
 |#
 
+#| Answer |#
+
+(load-ex "1.37")
+
+(define (tan x k)
+  (count-frac
+   (lambda (i) (if (= i 1) x (- (square x))))
+   (lambda (i) (- (* i 2.0) 1.0))
+   k))
+
+#| Tests -- manual
+
+> (tan 25 100)
+-0.1335264070215359 ; answer is -0.133526407021535879998...
+
+|#
+

@@ -22,3 +22,14 @@ a logarithmic number of steps.
 
 |#
 
+#| Answer |#
+(define (double n) (ash n 1))
+(define (halve n) (ash n -1))
+
+(define (fast-multi a b)
+  (fast-multi-iter a b 0))
+
+(define (fast-multi-iter a b result)
+  (cond [(= b 0) result]
+        [(even? b) (iter (double a) (halve b) result)]
+        [else (iter a (- b 1) (+ a result))]))

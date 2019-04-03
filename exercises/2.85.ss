@@ -27,3 +27,79 @@ its answers.
 
 |#
 
+(load-ex "2.84")
+
+#| Answer |#
+
+(define (project x) (apply-generic 'project x))
+
+(define (upgrade-with-project)
+  (define (numer x) (car x))
+  (define (denom x) (cdr x))
+  (put 'project '(rational) (lambda (x)
+    (make-integer (round (/ (numer x) (denom x))))))
+  (put 'project '(real) (lambda (x)
+    (let ([frac (inexact->exact x)])
+      (make-rational (numerator frac)
+                     (denominator frac)))))
+  (put 'project '(complex) (lambda (x) 
+    (make-real (real-part x))))
+  'done)
+
+(upgrade-with-project)
+
+(define (drop x)
+  (if (or (not (pair? x)) (not (get 'project (list (type-tag x)))))
+      x
+      (let ([projection (project x)])
+        (if (equ? x projection)
+            (drop projection)
+            x))))
+
+(define old-apply-generic apply-generic)
+(define (apply-generic op . args)
+  (drop (apply old-apply-generic (append (list op) args))))
+
+#| Tests -- expect 1 regression failure due to new drop feature |#
+
+(define-test (drop (make-integer 1))
+             '(integer . 1))
+(define-test (drop (make-rational 1 1))
+             '(integer . 1))
+(define-test (drop (make-real 1.0))
+             '(integer . 1))
+(define-test (drop (make-complex-from-real-imag 1.0 0.0))
+             '(integer . 1))
+
+(define-test (drop (make-complex-from-real-imag 2.0 2.0))
+             '(complex rectangular 2.0 . 2.0))
+(define-test (drop (make-rational 1 2))
+             '(rational 1 . 2))
+(define-test (drop (make-real (/ 1 3)))
+            '(rational 1 . 3))
+
+(define-test (add (make-complex-from-real-imag 1 2) (make-complex-from-real-imag 1 2))
+             '(complex rectangular 2 . 4))
+(define-test (add (make-complex-from-real-imag 1 0) (make-complex-from-real-imag 1 0))
+             '(integer . 2))
+
+#| Notes 
+
+It is weird that constructors bypass apply-generic's new
+autosimplification functionality but selectors do not. It is
+also kind of weird that selectors don't give you back what
+you put in.
+
+This is probably beyond scope because the underlying scheme
+number system doesn't have a way to represent an irrational
+real number. For example (sqrt 2) yields 1.4142135623730951
+which our type system might simplify to a really long
+fraction but an irrational number is what was actually
+meant.
+
+Perhaps the only solution would be to add types for various
+mathematical operators such as sqrt. In effect, complex is a
+type meaning f(x, y) = x + iy so you could have another type
+which is f(x) = sqrt(x).
+
+|# 

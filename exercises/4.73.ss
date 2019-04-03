@@ -12,3 +12,11 @@ explicitly? What would be wrong with defining it as follows:
 
 |#
 
+#| Answer 
+
+flatten-stream must use delay because the stream to be flattened might be
+infinite. In that case, the non-delayed version cars down the stream forever,
+never reaching a base case, when it attempts to evaluate the arguments for
+interleave in the outtermost flatten-stream call.
+
+|#

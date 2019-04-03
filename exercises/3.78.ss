@@ -19,3 +19,42 @@ dy / dt and generates the stream of successive values of y.
 
 |#
 
+(load-ex "3.77")
+
+#| Answer |#
+(define (solve-2nd a b dt y0 dy0)
+  (define y (integral (delay dy) y0 dt))
+  (define dy (integral (delay ddy) dy0 dt))
+  (define ddy (add-streams (scale-stream dy a) (scale-stream y b)))
+  y)
+
+#| Tests 
+
+Using wolfram alpha:
+  f''(t) - 5f'(t) - 4f(t) = 0, f(0)=1, f'(0)=1
+  f(t) = 1/82 e^(-1/2 (sqrt(41) - 5) t) ((41 - 3 sqrt(41)) e^(sqrt(41) t) + 41 + 3 sqrt(41))
+  f(0) = 1
+  f(1) = 79.909
+  f(1.5) = 1376.49
+
+dt=0.001
+  > (define dt 0.001)
+  > (stream-ref (solve-2nd 5 4 dt 1 1) (/ 0 dt))
+  1
+  > (stream-ref (solve-2nd 5 4 dt 1 1) (/ 1 dt))
+  78.63130577134581
+  > (stream-ref (solve-2nd 5 4 dt 1 1) (/ 1.5 dt))
+  1343.4632095490801
+
+dt=0.0001
+  > (define dt 0.0001)
+  > (stream-ref (solve-2nd 5 4 dt 1 1) (/ 0 dt))
+  1
+  > (stream-ref (solve-2nd 5 4 dt 1 1) (/ 1 dt))
+  79.77990005876653
+  > (stream-ref (solve-2nd 5 4 dt 1 1) (/ 1.5 dt))
+  1373.1373034830951
+
+  Seems to be approaching the correct answers.
+
+|#

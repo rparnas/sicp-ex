@@ -32,3 +32,117 @@ not, as appropriate.
 
 |#
 
+(load-ex "4.27")
+
+#| Answer -- application |#
+(define (procedure-parameter-name param)
+  (if (list? param)
+      (car param)
+      param))
+
+(define (procedure-parameter-type param)
+  (if (list? param)
+      (cadr param)
+      'none))
+
+(define (apply procedure arguments env)
+  (cond [(primitive-procedure? procedure)
+         (apply-primitive-procedure
+          procedure
+          (list-of-arg-values arguments env))] ; same as 4.27
+        [(compound-procedure? procedure)
+         (let* ([p-body (procedure-body procedure)]
+                [p-pars (procedure-parameters procedure)]
+                [p-env (procedure-environment procedure)]
+                [p-par-names (map procedure-parameter-name p-pars)])
+           (eval-sequence
+            p-body
+            (extend-environment
+              p-par-names
+              (list-of-partially-delayed-args p-pars arguments env) ; changed
+              p-env)))]
+        [else
+         (error "apply" "unknown procedure type" procedure)]))
+
+(define (list-of-partially-delayed-args pars exps env)
+  (if (no-operands? exps)
+      '()
+      (let* ([par (car pars)]
+             [par-type (procedure-parameter-type par)]
+             [exp (first-operand exps)]
+             [head (cond [(eq? par-type 'none) (eval exp env)]
+                         [(eq? par-type 'lazy) (lazy-it exp env)]
+                         [(eq? par-type 'lazy-memo) (lazy-memo-it exp env)]
+                         [else (error "apply" "bad parameter type" par-type)])])
+      (cons head (list-of-partially-delayed-args (cdr pars) (rest-operands exps) env)))))
+
+#| Answer -- thunks |#
+(define (force-it obj)
+  (cond [(or (lazy? obj) (lazy-memo? obj))
+         (let ([result (actual-value (thunk-exp obj) (thunk-env obj))])
+           (if (lazy-memo? obj)
+               (begin
+                 (set-car! obj 'evaluated-thunk)
+                 (set-car! (cdr obj) result)
+                 (set-cdr! (cdr obj) '()))
+               (void))
+           result)]
+         [(evaluated-thunk? obj)
+          (thunk-value obj)]
+        [else obj]))
+
+(define (lazy? obj) (tagged-list? obj 'lazy))
+(define (lazy-it exp env) (list 'lazy exp env))
+
+(define (lazy-memo? obj) (tagged-list? obj 'lazy-memo))
+(define (lazy-memo-it exp env) (list 'lazy-memo exp env))
+
+#| Answer -- deprecations |#
+(define (delay-it . args) (error "delay-it" "deprecated"))
+(define (thunk? . args) (error "thunk?" "deprecated"))
+(define (list-of-dealyed-args . args) (error "list-of-dealyed-args" "deprecated"))
+
+#| Tests
+
+1 regression test should fail -- The test from 4.27 fails because it relies on
+laziness that now must be explicitly stated. The first test below re-writes
+this.
+
+Re-test from 4.29:
+
+  ;;; none
+    > (define e (setup-environment))
+    > (eval '(define count 0) e)
+    > (eval '(define (id x) (set! count (+ count 1)) x) e)
+    > (eval '(define (square x) (* x x)) e)
+    > (force-it (eval '(square (id 10)) e))
+    100
+    > (force-it (eval 'count e))
+    1
+
+  ;;; lazy
+    > (define e (setup-environment))
+    > (eval '(define count 0) e)
+    > (eval '(define (id x) (set! count (+ count 1)) x) e)
+    > (eval '(define (square (x lazy)) (* x x)) e)
+    > (force-it (eval '(square (id 10)) e))
+    100
+    > (force-it (eval 'count e))
+    2
+
+  ;;; lazy memoized
+    > (define e (setup-environment))
+    > (eval '(define count 0) e)
+    > (eval '(define (id x) (set! count (+ count 1)) x) e)
+    > (eval '(define (square (x lazy-memo)) (* x x)) e)
+    > (force-it (eval '(square (id 10)) e))
+    100
+    > (force-it (eval 'count e))
+    1
+  
+|#
+
+(define-test (eval-one
+  '(begin (define (try a (b lazy)) (if (= a 0) 1 b))
+          (try 0 (/ 1 0))))
+  1)

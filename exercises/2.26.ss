@@ -15,3 +15,15 @@ evaluating each of the following expressions:
 
 |#
 
+#| Tests |#
+(define x (list 1 2 3))
+(define y (list 4 5 6))
+
+; append is "inside the trailing cdr of x, put y"
+(define-test (append x y) '(1 2 3 4 5 6))
+
+; cons is "create a new pair, car of x, cdr of y"
+(define-test (cons x y) '((1 2 3) 4 5 6))
+
+; list is "create a new list with the given elements"
+(define-test (list x y) '((1 2 3) (4 5 6)))

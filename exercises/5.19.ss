@@ -35,3 +35,24 @@ or to remove all breakpoints by means of
 
 |#
 
+(load-ex "5.18")
+
+#| Answer -- added to 5.15 |#
+
+#| Tests 
+
+> (define (m519) (make-machine (list) '(one (assign a (const 1)) two (assign a (const 2)) three (assign a (const 3)))))))
+> (define m (m519))
+> (trace-on)
+> (set-breakpoint m 'two 1)
+> (start m)
+one
+(assign a (const 1))
+two
+break
+> (proceed m)
+(assign a (const 2))
+three
+(assign a (const 3))
+
+|#

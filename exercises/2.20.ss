@@ -42,3 +42,16 @@ argument. For example,
 
 |#
 
+(define (same-parity x . ls)
+  (define f (if (odd? x) odd? even?))
+  (define (iter ls result)
+    (if (null? ls)
+        result
+        (iter (cdr ls) (if (f (car ls))
+                           (append result (list (car ls)))
+                           result))))
+  (iter ls (list x)))
+
+#| Tests |#
+(define-test (same-parity 1 2 3 4 5 6 7) '(1 3 5 7))
+(define-test (same-parity 2 3 4 5 6 7) '(2 4 6))

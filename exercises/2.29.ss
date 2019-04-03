@@ -45,3 +45,64 @@ the new representation?
 
 |#
 
+#| Code from book |#
+(define (make-mobile left right)
+  (list left right))
+
+(define (make-branch length structure)
+  (list length structure)) 
+
+#| Answer |#
+(define (left-branch mobile)
+  (car mobile))
+
+(define (right-branch mobile)
+  (cadr mobile))
+
+(define (branch-length branch)
+  (car branch))
+
+(define (branch-structure branch)
+  (cadr branch))
+
+(define (is-leaf-branch? branch)
+  (not (pair? (branch-structure branch))))
+
+(define (branch-weight branch)
+  ((if (is-leaf-branch? branch) 
+       (lambda (x) x) 
+       total-weight) (branch-structure branch)))
+
+(define (total-weight mobile)
+  (+ (branch-weight (left-branch mobile))
+     (branch-weight (right-branch mobile))))
+
+(define (balanced? mobile)
+  (define (branch-torque branch)
+    (* (branch-length branch) (branch-weight branch)))
+  (define (branch-balanced? branch)
+    (or (is-leaf-branch? branch) (balanced? (branch-structure branch))))
+  (let ([left (left-branch mobile)]
+        [right (right-branch mobile)])
+    (and (= (branch-torque left) (branch-torque right))
+         (branch-balanced? left)
+         (branch-balanced? right))))
+
+#| New Representation 
+(define (make-mobile left right)
+  (cons left right))
+(define (make-branch length structure)
+  (cons length structure))
+(define (right-branch mobile)
+  (cdr mobile))
+(define (branch-structure branch)
+  (cdr branch))
+|#
+
+#| Tests |#
+(define m1 (make-mobile (make-branch 4 6) (make-branch 5 (make-mobile (make-branch 3 7) (make-branch 9 8)))))
+(define m2 (make-mobile (make-branch 4 6) (make-branch 2 (make-mobile (make-branch 5 8) (make-branch 10 4)))))
+(define-test (total-weight m1) 21)
+(define-test (total-weight m2) 18)
+(define-test (balanced? m1) #f)
+(define-test (balanced? m2) #t)

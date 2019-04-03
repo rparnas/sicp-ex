@@ -21,8 +21,7 @@ primitives---that is, if it could generate code to directly
 use these primitive machine operations. The expression "(+ a
 1)" might be compiled into something as simple as
 
-(assign
- val (op lookup-variable-value) (const a) (reg env))
+(assign val (op lookup-variable-value) (const a) (reg env))
 (assign val (op +) (reg val) (const 1))
 
 In this exercise we will extend our compiler to support open
@@ -74,3 +73,111 @@ inputs.
 
 |#
 
+(load-ex "5.33") ; skip 5.36 & 5.37 which were experimental
+
+#| Answer 
+
+A more final implementation needs to define more information about the
+open-coded primitives such as whether they accept zero or one arguments, and how
+multiple arguments can be handled.
+
+It is much more efficient. For example, compare the = call of the two factorials.
+
+This
+
+  (save continue)
+  (save env)
+  (assign proc (op lookup-variable-value) (const =) (reg env))
+  (assign val (const 1))
+  (assign argl (op list) (reg val))
+  (assign val (op lookup-variable-value) (const n) (reg env))
+  (assign argl (op cons) (reg val) (reg argl))
+  (test (op primitive-procedure?) (reg proc))
+  (branch (label primitive-branch34))
+compiled-branch33
+  (assign continue (label after-call32))
+  (assign val (op compiled-procedure-entry) (reg proc))
+  (goto (reg val))
+primitive-branch34
+  (assign val (op apply-primitive-procedure) (reg proc) (reg argl))
+after-call32
+
+simplifies to this
+
+  (assign arg1 (op lookup-variable-value) (const n) (reg env))
+  (assign arg2 (const 1))
+  (assign val (op =) (reg arg1) (reg arg2))
+
+|#
+
+;;; rewrite from 5.33
+(define (comp exp target linkage)
+  (cond [(self-evaluating? exp)
+         (compile-self-evaluating exp target linkage)]
+        [(quoted? exp) (compile-quoted exp target linkage)]
+        [(variable? exp)
+         (compile-variable exp target linkage)]
+        [(assignment? exp)
+         (compile-assignment exp target linkage)]
+        [(definition? exp)
+         (compile-definition exp target linkage)]
+        [(if? exp) (compile-if exp target linkage)]
+        [(lambda? exp) (compile-lambda exp target linkage)]
+        [(begin? exp)
+         (compile-sequence (begin-actions exp)
+                           target
+                           linkage)]
+        [(cond? exp) (comp (cond->if exp) target linkage)]
+        [(ocp? exp)
+         (compile-ocp exp target linkage)]
+        [(application? exp)
+         (compile-application exp target linkage)]
+        [else
+         (error "compile" "unknown expression type" exp)]))
+
+(define open-coded-primitives '(= * - +))
+
+(define (ocp? exp) 
+  (and (pair? exp) (member (car exp) open-coded-primitives)))
+
+;;; rewrite of 5.33 -- compile-application
+(define (compile-ocp exp target linkage)
+  (do-one (operator exp) (operands exp) target linkage))
+
+(define (do-one ocp operands target linkage)
+  (if (null? operands)
+      (compile-ocp-call ocp '() target linkage) ; zero arguments
+      (let ([one (comp (car operands) 'arg1 'next)])
+        (preserving '(continue env)
+          one
+          (do-two ocp (cdr operands) target linkage)))))
+(define (do-two ocp operands target linkage)
+  (if (null? operands)
+      (compile-ocp-call ocp '(arg1) target linkage) ; one arguments
+      (let ([two (comp (car operands) 'arg2 'next)])
+        (preserving '(arg1 continue env)
+          two
+          (do-n ocp (cdr operands) target linkage)))))
+(define (do-n ocp operands target linkage)
+  (if (null? operands)
+      (compile-ocp-call ocp '(arg1 arg2) target linkage) ; final two arguments
+      (let ([next (comp (car operands) 'arg2 'next)])
+        (preserving '(continue env)
+          (compile-ocp-call ocp '(arg1 arg2) 'arg1 'next)
+          (preserving '(arg1)
+            next
+            (do-n ocp (cdr operands) target linkage))))))
+
+;;; rewrite of 5.33 -- compile-procedure-call
+(define (compile-ocp-call ocp input-regs target linkage)
+ (end-with-linkage linkage
+  (make-instruction-sequence input-regs (list target)
+    (list (append `(assign ,target (op ,ocp))
+                  (map (lambda (r) (list 'reg r)) input-regs))))))
+
+;;; re-write of 5.33
+(define all-regs '(env proc val arg1 arg2 argl continue))
+
+#| Tests |#
+(define-test (compile-test '(+ 1 2 3))
+             6)

@@ -52,3 +52,76 @@ with "let" in place of "letrec" in the definition of "f".
 
 |#
 
+(load-ex "4.17")
+
+#| Answer 
+
+a. see below
+
+b. let-frame below is the current frame at <rest of body of "f">
+
+   global[(f *)]
+         ^
+         |               
+  f-frame[(x 5)___________________________________________]
+         ^
+         |
+         |               (odd? (n) (...even?...) (env))
+         |                ^                      |
+         |                |                      V
+let-frame[(even? *) (odd? *)______________________________]
+                 |                                        ^
+                 V                                        |
+                (even? (n) (...odd?...) _________________ (env))
+
+If an ordinary let were used, the two procedures are created in the context of
+f-frame and thus would not have a reference to themselves or each other, causing
+their bodies to fail.
+
+   global[(f *)]
+         ^
+         |               
+  f-frame[(x 5)________________________________________________]
+         ^                                       ^          ^
+         |                                       |          |
+         |               (odd? (n) (...even?...) (env))     |
+         |                ^                                 |
+         |                |                                 |
+let-frame[(even? *) (odd? *)______________________________] |
+                 |                                          |
+                 V                                          |
+                (even? (n) (...odd?...) _________________ (env))
+
+|#
+
+(define (is-letrec? exp) (tagged-list? exp 'letrec))
+
+(define (letrec->transform exp)
+  (define (letrec-clauses exp) (cadr exp))
+  (define (letrec-body exp) (cddr exp))
+  (define (letrec-clause-var clause) (car clause))
+  (define (letrec-clause-exp clause) (cadr clause))
+  (let ([clauses (letrec-clauses exp)]
+        [body (letrec-body exp)])
+    (make-let (map letrec-clause-var clauses)
+              (map (lambda (clause) ''*undefined*) clauses)
+              (append (map (lambda (clause)
+                             (make-assignment (letrec-clause-var clause)
+                                              (letrec-clause-exp clause)))
+                           clauses)
+                      body))))
+
+(define eval-417 eval)
+(set! eval (lambda (exp env)
+  (cond [(is-letrec? exp) (eval (letrec->transform exp) env)]
+        [else (eval-417 exp env)])))
+
+#| Tests |#
+(define-test (eval-one '(begin 
+                          (define (f x)
+                            (letrec 
+                              ([even? (lambda (n) (if (= n 0) true (odd? (- n 1))))]
+                               [odd? (lambda (n) (if (= n 0) false (even? (- n 1))))])
+                              (cons (even? x) (odd? x))))
+                          (f 7)))
+              '(false . true))

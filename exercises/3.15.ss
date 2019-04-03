@@ -6,3 +6,9 @@ above.
 
 |#
 
+#| Code from book |#
+(define (set-to-wow! x)
+  (set-car! (car x) 'wow)
+  x)
+
+#| Answer -- on paper |#

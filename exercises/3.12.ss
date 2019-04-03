@@ -45,3 +45,33 @@ diagrams to explain your answer.
 
 |#
 
+#| Answer 
+
+State 1:
+  x: [a][-]> [b][\]
+  y: [c][-]> [d][\]
+  z: [a][-]> [b][-]> y
+
+State 2:
+  x: [a][-]> [b][-]> y
+  y: [c][-]> [d][\]
+  z: [a][-]> [b][-]> y
+  w: x
+
+> (define x (list 'a 'b))
+> (define y (list 'c 'd))
+> (define z (append x y))
+> z
+(a b c d) 
+; at State 1: (cdr x) points to pair ('b . null) aka proper list (b).
+> (cdr x)
+(b)
+> (define w (append! x y))
+> w
+> (a b c d) 
+; at State 2: (cdr x) points to pair ('b . y) aka a proper starting with b and
+; continuing on to the contents of y: (b c d)
+> (cdr x)
+(b c d)
+
+|#

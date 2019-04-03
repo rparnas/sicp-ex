@@ -52,3 +52,66 @@ people who supervise precisely one person.
 
 |#
 
+(load-ex "4.74")
+
+#| Answer |#
+
+;;; returns true if the given stream has a length equal to n
+(define (stream-length-equals? s n)
+  (cond [(= 0 n) (stream-null? s)]
+        [(stream-null? s) (= 0 n)]
+        [else (stream-length-equals? (stream-cdr s) (- n 1))]))
+(define (is-singleton-stream? s)
+  (stream-length-equals? s 1))
+
+;;; modified from 4.67 negate
+(define (uniquely-asserted operands frame-stream h)
+  (stream-flatmap
+    (lambda (frame)
+      (let ([extended-frames (qeval (car operands) (singleton-stream frame) h)])
+        (if (is-singleton-stream? extended-frames)
+            extended-frames
+            the-empty-stream)))
+    frame-stream))
+(put 'unique 'qeval uniquely-asserted)
+
+;;; test code updates
+(define clear-all!-old clear-all!)
+(set! clear-all! (lambda ()
+  (clear-all!-old)
+  (put 'unique 'qeval uniquely-asserted)))
+
+#| Tests |#
+(define-test (do-query test-db 
+  '(unique (job ?x (computer wizard))))
+  '((unique (job (Bitdiddle Ben) (computer wizard)))))
+
+(define-test (do-query test-db
+  '(unique (job ?x (computer programmer))))
+  '())
+
+(define-test (do-query test-db
+  '(and (job ?x ?j) (unique (job ?anyone ?j))))
+  '((and (job (Bitdiddle Ben) (computer wizard))
+         (unique (job (Bitdiddle Ben) (computer wizard))))
+    (and (job (Tweakit Lem E) (computer technician))
+         (unique (job (Tweakit Lem E) (computer technician))))
+    (and (job (Reasoner Louis) (computer programmer trainee))
+         (unique (job (Reasoner Louis) (computer programmer trainee))))
+    (and (job (Warbucks Oliver) (administration big wheel))
+         (unique (job (Warbucks Oliver) (administration big wheel))))
+    (and (job (Scrooge Eben) (accounting chief accountant))
+         (unique (job (Scrooge Eben) (accounting chief accountant))))
+    (and (job (Cratchet Robert) (accounting scrivener))
+         (unique (job (Cratchet Robert) (accounting scrivener))))
+    (and (job (Aull DeWitt) (administration secretary))
+         (unique (job (Aull DeWitt) (administration secretary))))))
+
+;;; all people who supervise precisely one person
+(define-test (do-query test-db
+  '(and (job ?p . ?any0)
+        (unique (supervisor ?any1 ?p))))
+  '((and (job (Hacker Alyssa P) (computer programmer))
+         (unique (supervisor (Reasoner Louis) (Hacker Alyssa P))))
+    (and (job (Scrooge Eben) (accounting chief accountant))
+         (unique (supervisor (Cratchet Robert) (Scrooge Eben))))))

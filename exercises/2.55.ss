@@ -10,3 +10,9 @@ Explain.
 
 |#
 
+#| Answer
+
+This is because (quote (quote abracadabra)) yields (quote
+abracadabra) and you are taking the car of that.
+
+|#

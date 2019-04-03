@@ -11,3 +11,15 @@ on and off for designated machine registers.
 
 |#
 
+(load-ex "5.17")
+
+#| Answer -- added to 5.15 |#
+
+#| Tests 
+
+> (define (m) (make-machine (list) '((assign a (const 1)) (assign b (const 2)) (assign c (const 3)))))
+> (begin (trace-on-reg m 'b) (start m))
+> (let ([m (m)]) (begin (trace-on-reg m 'b) (start m)))
+b: *unassigned* -> 2
+
+|#

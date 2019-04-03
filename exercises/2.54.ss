@@ -20,3 +20,23 @@ is "equal?" to "(cdr b)". Using this idea, implement
 
 |#
 
+#| Answer |#
+(define (equal? a b)
+  (cond [(or (null? a) (null? b)) 
+         (and (null? a) (null? b))]
+        [(and (pair? a) (pair? b))
+         (and (equal? (car a) (car b)) (equal? (cdr a) (cdr b)))]
+        [(and (not (pair? a)) (not (pair? b)))
+         (= a b)]
+        [else 
+         #f]))
+
+#| Tests |#
+(define a0 '(1 2 3))
+(define a1 '(1 2 3))
+(define b0 '(4 5 6))
+(define-test (equal? '() '()) #t)
+(define-test (equal? '() '(5)) #f)
+(define-test (equal? '(5) '()) #f)
+(define-test (equal? a0 a1) #t)
+(define-test (equal? a0 b0) #f)

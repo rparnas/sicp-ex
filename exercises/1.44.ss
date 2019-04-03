@@ -15,3 +15,16 @@ from Exercise 1.43.
 
 |#
 
+#| Answer |#
+
+(load-ex "1.43")
+
+(define (smooth f dx)
+  (lambda (x)
+    (/ (+ (f x)
+          (f (+ x dx))
+          (f (- x dx)))
+       3)))
+
+(define (n-fold-smooth f dx n)
+  (repeated (smooth f dx) n))

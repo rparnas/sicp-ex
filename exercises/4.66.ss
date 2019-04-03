@@ -30,3 +30,16 @@ salvage the situation.
 
 |#
 
+(load-ex "4.65")
+
+#| Answer 
+
+The problem is some queries return duplicate results.
+
+This can be solved by filtering out duplicates. Introducing general filtering
+isn't simple. How do you define duplicate? (and A B), (and B A) could be
+considered duplicate. Do you ever want duplicates? Accumulation probably
+shouldn't imply filtering for uniqueness but a rule like "wheel" probably
+should. Or should something lower level in the query system do filtering?
+
+|#

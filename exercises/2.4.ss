@@ -16,3 +16,22 @@ of Section 1.1.5.)
 
 |#
 
+#| Code from book |#
+(define (cons x y)
+  (lambda (m) (m x y)))
+(define (car z)
+  (z (lambda (p q) p)))
+
+#| Answer |#
+(define (cdr z)
+  (z (lambda (p q) q)))
+
+#| Tests 
+
+> (car (cons 1 2)) 1)
+1
+
+> (cdr (cons 1 2)) 2)
+2
+
+|#

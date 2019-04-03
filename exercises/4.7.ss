@@ -23,3 +23,41 @@ expressions?
 
 |#
 
+(load-ex "4.6")
+
+#| Answer |#
+
+(define (make-let vars exps body)
+  (cons 'let
+    (cons (map list vars exps)
+          body)))
+
+(define (is-let*? exp) (tagged-list? exp 'let*))
+
+(define (let*->nested-lets exp)
+  (define (let*-clauses exp) (cadr exp))
+  (define (let*-body exp) (cddr exp))
+  (define (let*-clause-var clause) (car clause))
+  (define (let*-clause-exp clause) (cadr clause))
+  (let ([clauses (let*-clauses exp)]
+        [body (let*-body exp)])
+    (define (iter clauses)
+      (let ([first (car clauses)])
+        (make-let (list (let*-clause-var first))
+                  (list (let*-clause-exp first))
+                  (if (null? (cdr clauses))
+                      body
+                      (list (iter (cdr clauses)))))))
+    (if (null? clauses)
+        (make-begin body)
+        (iter clauses))))
+
+(define eval-46 eval)
+(set! eval (lambda (exp env)
+  (cond [(is-let*? exp) (eval (let*->nested-lets exp) env)]
+        [else (eval-46 exp env)])))
+
+#| Tests |#
+(define-test (eval-one '(let* () 5)) 5)
+(define-test (eval-one '(let* ([x 5]) x)) 5)
+(define-test (eval-one '(let* ([x 5] [y (* x 2)]) y)) 10)

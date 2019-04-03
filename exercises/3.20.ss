@@ -14,3 +14,14 @@ using the procedural implementation of pairs given above.
 
 |#
 
+#| Code from book |#
+(define (cons x y)
+  (define (set-x! v) (set! x v))
+  (define (set-y! v) (set! y v))
+  (define (dispatch m)
+    (cond ((eq? m 'car) x)
+          ((eq? m 'cdr) y)
+          ((eq? m 'set-car!) set-x!)
+          ((eq? m 'set-cdr!) set-y!)
+          (else (error "cons" "undefined operation" m))))
+  dispatch)

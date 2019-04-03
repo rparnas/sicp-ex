@@ -11,3 +11,13 @@ composition. For example, if "inc" is a procedure that adds
 
 |#
 
+#| Code from book |#
+(define (inc x) (+ x 1))
+
+#| Answer |#
+
+(define (compose f g)
+  (lambda (x) (f (g x))))
+
+#| Tests |#
+(define-test ((compose square inc) 6) 49)

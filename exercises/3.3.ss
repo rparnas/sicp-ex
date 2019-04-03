@@ -17,3 +17,31 @@ was created, and should otherwise return a complaint:
 
 |#
 
+#| Answer |#
+(define (make-account balance password)
+  (define (withdraw amount)
+    (if (>= balance amount)
+        (begin (set! balance (- balance amount))
+               balance)
+        "Insufficient funds"))
+  (define (deposit amount)
+    (set! balance (+ balance amount))
+    balance)
+  (define (dispatch m)
+    (cond [(eq? m 'withdraw) withdraw]
+          [(eq? m 'deposit) deposit]
+          [else (error "make-account" "unknown request" m)]))
+  (lambda (pw m)
+    (if (eq? pw password)
+        (dispatch m)
+        (lambda (x) "Incorrect password"))))
+
+#| Tests |#
+(define-test (begin
+               (define acc (make-account 100 'secret-password))
+               (list 
+                 ((acc 'secret-password 'withdraw) 40)
+                 ((acc 'some-other-password 'deposit) 50)))
+               (list 
+                 60
+                 "Incorrect password"))

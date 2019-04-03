@@ -16,3 +16,31 @@ and multiplying a vector by a scalar:
 
 |#
 
+#| Answer |#
+(define (make-vect x y)
+  (cons x y))
+
+(define (xcor-vect v)
+  (car v))
+
+(define (ycor-vect v)
+  (cdr v))
+
+(define (add-vect v0 v1)
+  (make-vect (+ (xcor-vect v0) (xcor-vect v1))
+             (+ (ycor-vect v0) (ycor-vect v1))))
+
+(define (sub-vect v0 v1)
+  (make-vect (- (xcor-vect v0) (xcor-vect v1))
+             (- (ycor-vect v0) (ycor-vect v1))))
+
+(define (scale-vect v s)
+  (make-vect (* (xcor-vect v) s)
+             (* (ycor-vect v) s)))
+
+#| Tests |#
+(define a (make-vect 4 5))
+(define b (make-vect 9 4))
+(define-test (add-vect a b) '(13 . 9))
+(define-test (sub-vect a b) '(-5 . 1))
+(define-test (scale-vect a 3) '(12 . 15))

@@ -9,3 +9,11 @@ the list that contains only the last element of a given
 
 |#
 
+#| Answer |#
+(define (last-pair ls)
+  (if (null? (cdr ls))
+      ls
+      (last-pair (cdr ls))))
+
+#| Tests |#
+(define-test (last-pair (list 23 72 149 34)) '(34))

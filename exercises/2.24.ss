@@ -7,3 +7,4 @@ and the interpretation of this as a tree (as in Figure 2.6).
 
 |#
 
+#| Answer on paper |#

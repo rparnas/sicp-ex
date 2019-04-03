@@ -24,3 +24,18 @@ feature.
 
 |#
 
+(load-ex "3.3")
+
+(define (make-joint acc acc-pw new-pw)
+  (lambda (pw m)
+    (if (eq? pw new-pw)
+        (lambda (x) ((acc acc-pw m) x))
+        (lambda (x) "Incorrect password"))))
+
+#| Tests |#
+(define-test (begin
+               (define a (make-account 100 'a))
+               (define b (make-joint a 'a 'b))
+               ((a 'a 'withdraw) 10)
+               ((b 'b 'withdraw) 10))
+             80)

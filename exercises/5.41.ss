@@ -17,3 +17,4 @@ y))". "find-variable" should produce
 
 |#
 
+#| Answer -- added to 5.40 |#

@@ -26,3 +26,29 @@ alphabet?
 
 |#
 
+#| Answer 
+
+84 bits are required.
+
+A fixed-length encoding requires log_2(8) or 4 bits per word.
+
+|#
+
+(load-ex "2.69")
+
+(define rock-alphabet
+  '((A 2) (BOOM 1) (GET 2) (JOB 2) (NA 16) (SHA 3) (YIP 9) (WAH 1)))
+
+(define rock-tree
+  (generate-huffman-tree rock-alphabet))
+
+(define song
+  '(GET A JOB
+    SHA NA NA NA NA NA NA NA NA
+    GET A JOB
+    SHA NA NA NA NA NA NA NA NA
+    WAH YIP YIP YIP YIP YIP YIP YIP YIP YIP
+    SHA BOOM))
+
+#| Tests |#
+(define-test (length (encode song rock-tree)) 84)
