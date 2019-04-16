@@ -32,7 +32,7 @@
 
 #| Exercise Name Parsing |#
 
-;;; Given an exercise string like "1.10" returns a list like (1 10) or #f if the given is not valid.
+;;; Given an exercise string like "1.10" returns a list like (1 10) or #f if the given is invalid.
 (define (ex->list ex)
   (if (not (string? ex))
       #f
@@ -67,6 +67,7 @@
   (not (not (ex->list ex))))
 
 #| Testing |#
+
 ;;; Sorted alist with one test-set for each loaded exercise, ordered by
 ;;; exercise. A test set has a string exercise name, a list of flags which are
 ;;; symbols, and a list of tests in the form (expression . expected-result).
@@ -85,6 +86,9 @@
 
 ;;; Sets the test-set for the given exercise.
 (define (set-test-set ex test-set)
+  (if (not (get-test-set ex))
+      (set-test-set ex (make-test-set ex '() '()))
+      (void))
   (set! all-tests
         (safe-sort (lambda (ts0 ts1) (ex-lt (test-set-ex ts0) (test-set-ex ts1)))
                    (cons test-set
@@ -98,6 +102,7 @@
     (set-test-set ex (make-test-set (test-set-ex test-set)
                                     (append (test-set-flags test-set) (list flag))
                                     (test-set-tests test-set)))))
+
 ;;; Adds a test for the given exercise
 (define (add-test ex expression expected-result)
   (let ([test-set (get-test-set ex)])
@@ -123,6 +128,12 @@
 
 ;;; Runs any loaded tests for the given exercise and all previous exercises.
 (define (run-tests ex)
+  (define (in-order-map f ls)
+    (define (iter result ls)
+      (if (null? ls)
+          result
+          (iter (cons (f (car ls)) result) (cdr ls))))
+    (reverse (iter '() ls)))
   (let* ([test-set (get-test-set ex)]
          [sets-to-run (if (member 'no-regression (test-set-flags test-set))
                           (list test-set)
@@ -130,12 +141,12 @@
                                     (or (ex-lt (test-set-ex test-set) ex)
                                     (equal? ex (test-set-ex test-set))))
                                   all-tests))])
-    (map (lambda (test-set)
+    (in-order-map (lambda (test-set)
            (cons (test-set-ex test-set)
-                 (map (lambda (test)
+                 (in-order-map (lambda (test)
                         (run-test (test-expression test) (test-expected-result test)))
                       (test-set-tests test-set))))
-          sets-to-run)))   
+          sets-to-run)))
 
 ;;; Transforms a list of results into a summary string.
 (define (test-results->summary ex results)
@@ -166,6 +177,17 @@
           [else 
            (format "~a, ~a" this-summary reg-summary)])))
 
+;;; Returns all failing tessts results when running tests for the given exercise.
+(define (get-failing-tests ex)
+  (filter (lambda (test-set)
+            (> (length test-set) 1))
+          (map (lambda (test-set)
+             (cons (car test-set)
+                   (filter (lambda (test-result) 
+                             (not (car test-result))) 
+                           (cdr test-set)))) 
+           (run-tests ex))))
+
 #| Public Utilities |#
 
 ;;; Syntax for adding a test like (define-test (+ 2 2) 4)
@@ -190,7 +212,6 @@
       (error "load-ex" "invalid exercise" ex)
       (begin
         (set! current-ex (cons ex current-ex))
-        (set-test-set ex (make-test-set ex '() '()))
         (load (ex->path ex))
         (display (format "Loaded ~a" (ex->path ex)))
         (let* ([test-results (run-tests ex)]

@@ -97,6 +97,10 @@ Loaded .\exercises\6.2.ss (4/4 tests passed, 2/2 regression tests passed)
 
 `(define-test (+ 2 2) 4)` Defines an automated test. Tests are run whenever an exercise file is loaded. If an exercise answer loads a previous answer via `load-ex` the tests for that previous answer are run in the context of the new exercise, to make sure that the new answer hasn't broken previous functionality. 
 
+### get-failing-tests
+`(reset-ex exercise)` Same as `run-tests` except only displays the results of
+failing tests.
+
 ### inc
 
 `(inc n)` Increments the given number by 1.
