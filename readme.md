@@ -1,11 +1,11 @@
 # sicp-ex
-This provides resources to aid in completing the exercises from *Structure and Interpretation of Computer Programs*:
+This provides resources for completing the exercises from *Structure and Interpretation of Computer Programs*:
 
 - Pre-made exercise files with the prompt of each exercise as a plaintext scheme comment.
-- Ability to jump between exercises without moving through commit history. This includes quickly resetting the global environment to the context of any given exercise.
+- Ability to jump between exercises without moving through commit history. This includes resetting the environment to the context of any given exercise.
 - Automated testing and regression testing.
 
-Currently, this has been used against [Chez Scheme](https://github.com/cisco/ChezScheme) and [Racket](https://github.com/racket/racket) on Windows.
+Currently, this has been tried with [Chez Scheme](https://github.com/cisco/ChezScheme) and [Racket](https://github.com/racket/racket) on Windows.
 
 Exercise prompts were parsed from a fork of [sarabander/sicp-pdf](https://github.com/sarabander/sicp-pdf) at [this commit](https://github.com/rparnas/sicp-pdf/commit/62d2b424470f37587f056ab73addc850a7d6da8e).
 
@@ -196,20 +196,22 @@ Returns a modified version of the given function which traces itself by displayi
 | 10A | Compilation | 5.3 <br>5.5 (?) |  [Link](https://www.youtube.com/watch?v=kNmiTTKiYd4) |
 | 10B | Garbage Collection | 5.3 (?) <br>5.4 |  [Link](https://www.youtube.com/watch?v=2s2_FAf-yQs) |
 
-# Future Improvements
-* Exercise prompts
+# Future Ideas
+* Exercise prompt fixes
   * 2.13 -- too much text
   * 2.42 and 3.73 -- figures are labeled twice
   * 3.8 -- missing a diagram.
   * 3.30 -- missing a figure of a ripple-carry adder
   * 4.55 -- is labeled a/b/c instead of 1/2/3
   * Reference page numbers (?)
-  * Document expected dependencies between answers (?)
+  * Document the expected dependencies between answers (?). This breaks down as the exercises become more advanced you have more options as to whether you want to proceed via a patch to a previous exercise or a copy-paste.
   * Include code "copied from book" needed for answers.
+  * Include a packet of domain review like a half-page review for 
+  * Include exercise hints, especially for any exercises that tend to get people stuck on dead-ends that prompt didn't intend for you to explore.
 * Resources
-  * Verify lecture to text mapping
+  * Verify lecture to text mapping.
 * Testing
-  * floating point expected results
+  * floating point expected results.
   * better handling of answers which should break compatibility with previous exercises.
 * Utilities
   * Would be nice to eliminate bash script.
