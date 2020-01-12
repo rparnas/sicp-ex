@@ -8,7 +8,12 @@ successive "cdr"s would go into an infinite loop. Exercise
 
 |#
 
-#| Answer |#
+#| Answer 
+
+Answer below is incorrect -- needs to be updated.
+
+|#
+
 (define (is-cycle? ls)
   (define (iter x)
     (cond [(not (pair? x))
